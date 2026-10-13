@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>磊集 LEIJI · 设计师素材台</title>
+<meta name="description" content="磊集 LEIJI —— 为平面 / 3D / 空间设计师做的素材管理台：采集、分类、标签、配色检索，随时翻出参考图。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#F3F0E8; --panel:#FFFFFF; --panel2:#FAF8F3; --panel3:#F0ECE1;
+    --ink:#1B1813; --ink2:#514A3D; --muted:#867E6F;
+    --line:#E6DFCF; --line2:#D4CAB5;
+    --accent:#E4441D; --accent-hover:#B92F12; --accent-ink:#B92F12; --accent-soft:#FCEAE3; --accent-on:#fff;
+    --accent-on-inv:var(--accent);
+    --ok:#0F766E; --ok-soft:#E4F2EF;
+    --bar-bg:rgba(243,240,232,.9);
+    --hover:rgba(27,24,19,.055); --hover2:rgba(27,24,19,.1);
+    --inverse-soft:rgba(255,255,255,.14); --inverse-soft2:rgba(255,255,255,.26);
+    --sb:#CFC6B2; --sbh:#B8AE97;
+    --side:250px; --top:58px; --r:12px;
+    --cw:196px;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  /* 深色工具模式（借鉴美叶：白底看品味 · 深底干活） */
+  html[data-theme="dark"]{
+    --bg:#131211; --panel:#1C1A18; --panel2:#201E1B; --panel3:#2A2723;
+    --ink:#F4EFE6; --ink2:#C7BFB1; --muted:#8B8375;
+    --line:#312D28; --line2:#454038;
+    --accent:#F0441C; --accent-hover:#FF5C34; --accent-ink:#FF8A66; --accent-soft:#3A1D14; --accent-on:#fff;
+    --accent-on-inv:var(--accent-hover);
+    --ok:#19A08D; --ok-soft:#12302C;
+    --bar-bg:rgba(19,18,17,.9);
+    --hover:rgba(255,255,255,.06); --hover2:rgba(255,255,255,.1);
+    --inverse-soft:rgba(0,0,0,.12); --inverse-soft2:rgba(0,0,0,.2);
+    --sb:#3A352E; --sbh:#4C463D;
+  }
+  /* 强调色 · 美叶同款荧光黄绿 */
+  html[data-accent="lime"]{ --accent:#DFFF1F; --accent-hover:#C7E800; --accent-ink:#5E7A00; --accent-soft:#F4FFC7; --accent-on:#1B1813; }
+  html[data-theme="dark"][data-accent="lime"]{ --accent:#CDEB1C; --accent-hover:#B7D406; --accent-ink:#D9F26B; --accent-soft:#242B05; --accent-on:#131211; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:"Noto Sans SC",system-ui,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{background:none;border:none;cursor:pointer;text-align:left}
+  ::selection{background:var(--accent);color:var(--accent-on)}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  .disp{font-family:"Bricolage Grotesque","Noto Sans SC",sans-serif}
+  .hide{display:none!important}
+  ::-webkit-scrollbar{width:11px;height:11px}
+  ::-webkit-scrollbar-thumb{background:var(--sb);border-radius:9px;border:3px solid transparent;background-clip:content-box}
+  ::-webkit-scrollbar-thumb:hover{background:var(--sbh);background-clip:content-box}
+
+  /* ---------- topbar ---------- */
+  header.top{flex:0 0 var(--top);height:var(--top);display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line);z-index:60}
+  .brand{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+  .mark{width:34px;height:34px;border-radius:9px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:900;font-size:18px;position:relative;overflow:hidden;flex:0 0 auto}
+  .mark::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(128,128,128,.35) 6px 7px)}
+  .brand .w{display:flex;flex-direction:column;line-height:1}
+  .brand .w b{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:15.5px}
+  .brand .w i{font-style:normal;font-size:9px;letter-spacing:.28em;color:var(--muted);margin-top:3px}
+  .search{flex:1 1 auto;max-width:560px;position:relative;display:flex;align-items:center;margin-left:8px}
+  .search svg{position:absolute;left:12px;width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2}
+  .search input{width:100%;background:var(--panel3);border:1px solid var(--line);border-radius:9px;padding:9px 13px 9px 34px;font-size:13.5px;outline:none;transition:.18s}
+  .search input:focus{background:var(--panel);border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .top .sp{flex:1}
+  .seg{display:flex;background:var(--panel3);border:1px solid var(--line);border-radius:9px;padding:2px;gap:2px}
+  .seg button{padding:6px 10px;border-radius:7px;font-size:12.5px;color:var(--ink2);display:grid;place-items:center;transition:.15s}
+  .seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+  .seg svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+  select.sel{background:var(--panel3);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12.5px;color:var(--ink2);outline:none}
+  .btn-acc{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:var(--accent-on);font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:9px;box-shadow:0 8px 18px -12px var(--accent);transition:.18s;flex:0 0 auto}
+  .btn-acc:hover{background:var(--accent-hover)}
+  .btn-acc svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4}
+  .iconbtn{width:36px;height:36px;border-radius:9px;display:none;place-items:center;border:1px solid var(--line);background:var(--panel3)}
+  .iconbtn svg{width:17px;height:17px;stroke:var(--ink);fill:none;stroke-width:2}
+  .ibtn{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--line);background:var(--panel3);flex:0 0 auto;transition:.15s}
+  .ibtn:hover{border-color:var(--ink2)}
+  .ibtn svg{width:17px;height:17px;stroke:var(--ink);fill:none;stroke-width:1.9;stroke-linecap:round}
+  .ibtn .adot{width:16px;height:16px;border-radius:99px;background:var(--accent);box-shadow:0 0 0 1px var(--line2)}
+
+  /* ---------- shell ---------- */
+  .shell{flex:1 1 auto;display:flex;min-height:0}
+  .side{width:var(--side);flex:0 0 var(--side);background:var(--panel2);border-right:1px solid var(--line);overflow:auto;padding:14px 10px 30px;display:flex;flex-direction:column;gap:3px}
+  .side .glab{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;padding:14px 10px 6px;display:flex;align-items:center}
+  .side .glab button{margin-left:auto;color:var(--accent-ink);font-size:15px;font-weight:700;line-height:1;padding:2px 6px;border-radius:6px}
+  .side .glab button:hover{background:var(--accent-soft)}
+  .navb{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;font-size:13.5px;color:var(--ink2);transition:.15s;width:100%;position:relative}
+  .navb:hover{background:var(--hover)}
+  .navb.on{background:var(--ink);color:var(--bg)}
+  .navb.on .cnt{background:var(--inverse-soft2);color:var(--bg)}
+  .navb .ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9;flex:0 0 auto;opacity:.85}
+  .navb .dot{width:8px;height:8px;border-radius:99px;flex:0 0 auto}
+  .navb .tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .navb .cnt{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);background:var(--panel3);padding:1px 7px;border-radius:99px;flex:0 0 auto}
+  .navb .catx{display:none;gap:2px;flex:0 0 auto}
+  .navb:hover .catx{display:flex}
+  .navb .catx button{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:var(--muted)}
+  .navb .catx button:hover{background:var(--hover2);color:var(--ink)}
+  .navb .catx svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+  .side-foot{margin-top:auto;padding:14px 10px 0;border-top:1px solid var(--line);font-size:10.5px;color:var(--muted);font-family:"JetBrains Mono",monospace;line-height:1.7}
+
+  .main{flex:1 1 auto;min-width:0;overflow:auto;position:relative;background:var(--bg)}
+  .bar{position:sticky;top:0;z-index:30;background:var(--bar-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:11px 20px}
+  .bar .r1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .bar h2{font-family:"Bricolage Grotesque","Noto Sans SC",sans-serif;font-weight:800;font-size:18px;line-height:1.2}
+  .bar .n{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted)}
+  .bar .sp{flex:1}
+  .tgl{font-size:12.5px;padding:7px 12px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:var(--ink2);transition:.15s;white-space:nowrap}
+  .tgl:hover{border-color:var(--ink)}
+  .tgl.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .bar .r2{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .chip{font-size:12px;padding:6px 12px;border-radius:99px;border:1px solid var(--line2);background:var(--panel);color:var(--ink2);transition:.15s;white-space:nowrap}
+  .chip:hover{border-color:var(--ink)}
+  .chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .swatch{width:26px;height:26px;border-radius:99px;border:2px solid #fff;box-shadow:0 0 0 1px var(--line2);transition:.15s}
+  .swatch:hover{transform:scale(1.12)}
+  .swatch.on{box-shadow:0 0 0 2px var(--ink)}
+
+  .content{padding:16px 20px 90px}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(var(--cw),1fr));align-content:start}
+  .grid .cell{position:relative;aspect-ratio:4/3;border-radius:11px;overflow:hidden;background:var(--panel3);border:1px solid var(--line);cursor:pointer;transition:.18s var(--ease)}
+  .grid .cell:hover{box-shadow:0 12px 26px -16px rgba(27,24,19,.6);transform:translateY(-2px);border-color:var(--line2)}
+  .grid .cell img{width:100%;height:100%;object-fit:cover;transition:.3s}
+  .cell .cap{position:absolute;left:0;right:0;bottom:0;padding:16px 9px 8px;background:linear-gradient(transparent,rgba(20,17,13,.72));color:#fff;font-size:11.5px;line-height:1.35;opacity:0;transition:.2s}
+  .cell:hover .cap{opacity:1}
+  .cell .cap b{font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cell .cap span{opacity:.75;font-size:10.5px}
+  .cell .chk{position:absolute;left:8px;top:8px;width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.9);border:1.5px solid rgba(27,24,19,.25);display:none;place-items:center;transition:.15s}
+  .cell .chk svg{width:14px;height:14px;stroke:var(--accent-on);fill:none;stroke-width:2.6;opacity:0}
+  .selmode .cell .chk{display:grid}
+  .cell.picked .chk{background:var(--accent);border-color:var(--accent)}
+  .cell.picked .chk svg{opacity:1}
+  .cell.picked{outline:2px solid var(--accent);outline-offset:-2px}
+  .cell .cattag{position:absolute;right:7px;top:7px;font-size:10px;font-weight:600;color:#fff;padding:2px 8px;border-radius:99px;background:rgba(20,17,13,.6);backdrop-filter:blur(3px)}
+  .wf{column-count:4;column-gap:12px}
+  .wf .cell{aspect-ratio:auto;margin-bottom:12px;break-inside:avoid}
+  .wf .cell img{width:100%;height:auto;display:block}
+  .wf .cell .cap{opacity:1;position:static;background:none;color:var(--ink);padding:8px 10px 10px;font-size:12px}
+  .wf .cell .cap b{color:var(--ink)}
+  @media(max-width:1500px){.wf{column-count:3}}
+  @media(max-width:1000px){.wf{column-count:2}}
+  @media(max-width:600px){.wf{column-count:1}}
+  .more{grid-column:1/-1;text-align:center;padding:16px}
+  .more button{font-size:13px;font-weight:600;color:var(--ink);border:1px solid var(--line2);background:var(--panel);padding:9px 20px;border-radius:99px}
+  .more button:hover{border-color:var(--accent);color:var(--accent-ink)}
+
+  /* library cards */
+  .libgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));align-content:start}
+  .lcard{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden;display:flex;flex-direction:column;transition:.2s var(--ease)}
+  .lcard:hover{box-shadow:0 16px 34px -22px rgba(27,24,19,.6);transform:translateY(-2px)}
+  .lcard .ph{position:relative;cursor:zoom-in;background:var(--panel3)}
+  .lcard .ph img{width:100%;aspect-ratio:4/3;object-fit:cover}
+  .lcard .col{position:absolute;right:9px;top:9px;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:99px;background:var(--panel);color:var(--ink);border:1px solid var(--line2);box-shadow:0 5px 14px -8px rgba(0,0,0,.5)}
+  .lcard .col.got{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .lcard .col svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4}
+  .lcard .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .lcard h3{font-size:14px;font-weight:700;line-height:1.35}
+  .lcard p{font-size:12px;color:var(--muted);font-weight:300;line-height:1.5}
+  .lcard .use{font-size:12px;color:var(--accent-ink);background:var(--accent-soft);border-left:2px solid var(--accent);padding:6px 10px;border-radius:0 7px 7px 0;line-height:1.45}
+  .lcard .use b{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.03em}
+  .lcard .ft{margin-top:auto;padding-top:10px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .lcard .ft a:hover{color:var(--accent-ink)}
+
+  /* empty state */
+  .empty{max-width:560px;margin:46px auto;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:34px 28px}
+  .empty h3{font-family:"Bricolage Grotesque","Noto Sans SC",sans-serif;font-weight:800;font-size:20px}
+  .empty p{color:var(--muted);font-size:13px;font-weight:300;margin:9px auto 0;max-width:44ch}
+  .empty .zone{margin-top:20px;border:2px dashed var(--line2);border-radius:14px;background:var(--panel2);padding:26px 20px;transition:.2s;cursor:pointer}
+  .empty .zone:hover,.empty .zone.over{border-color:var(--accent);background:var(--accent-soft)}
+  .empty .zone b{display:block;font-size:14.5px}
+  .empty .zone small{display:block;margin-top:6px;font-size:12px;color:var(--muted);font-weight:300}
+  .empty .zb{display:flex;gap:9px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+
+  /* trends / sources */
+  .tgrid{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+  .tr{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px 18px;transition:.2s}
+  .tr:hover{border-color:var(--line2);box-shadow:0 14px 30px -22px rgba(27,24,19,.55)}
+  .tr .no{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent-ink);letter-spacing:.09em}
+  .tr h4{font-size:15px;font-weight:700;margin-top:8px}
+  .tr em{display:block;font-style:italic;font-size:11.5px;color:var(--muted);margin-top:3px}
+  .tr p{font-size:12.5px;color:var(--muted);font-weight:300;margin-top:8px}
+  .sgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+  .sg{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px 18px}
+  .sg h4{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--accent-ink);font-family:"JetBrains Mono",monospace;text-transform:uppercase}
+  .sg a{display:block;padding:8px 9px;border-radius:8px;transition:.15s}
+  .sg a:hover{background:var(--panel3)}
+  .sg a b{font-size:13px;font-weight:600}
+  .sg a span{display:block;font-size:11.5px;color:var(--muted);font-weight:300;margin-top:1px}
+  .sg .sl{margin-top:10px;display:flex;flex-direction:column;gap:1px}
+
+  /* selection action bar */
+  .selbar{position:fixed;left:50%;bottom:22px;transform:translate(-50%,18px);z-index:80;display:none;align-items:center;gap:12px;background:var(--ink);color:var(--bg);padding:11px 14px 11px 18px;border-radius:14px;box-shadow:0 20px 44px -20px rgba(0,0,0,.7)}
+  .selbar.show{display:flex}
+  .selbar b{font-size:13.5px}
+  .selbar .b2{font-size:12.5px;font-weight:500;background:var(--inverse-soft);padding:8px 13px;border-radius:9px;color:var(--bg);transition:.15s;position:relative}
+  .selbar .b2:hover{background:var(--inverse-soft2)}
+  .selbar .b2.danger:hover{background:var(--accent);color:var(--accent-on)}
+  .selbar .x{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--inverse-soft)}
+  .selbar .x svg{width:16px;height:16px;stroke:var(--bg);fill:none;stroke-width:2}
+  .pop{position:fixed;z-index:90;background:var(--panel);border:1px solid var(--line2);border-radius:11px;box-shadow:0 22px 46px -20px rgba(0,0,0,.55);padding:6px;min-width:190px;max-height:60vh;overflow:auto;display:none}
+  .pop.show{display:block}
+  .pop button{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--ink2)}
+  .pop button:hover{background:var(--panel3)}
+  .pop .dot{width:9px;height:9px;border-radius:99px}
+
+  /* drawer */
+  .scrim{position:fixed;inset:0;background:rgba(20,17,13,.34);opacity:0;pointer-events:none;transition:.24s;z-index:100}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,92vw);background:var(--panel);border-left:1px solid var(--line);box-shadow:-24px 0 60px -30px rgba(0,0,0,.5);transform:translateX(102%);transition:.3s var(--ease);z-index:110;display:flex;flex-direction:column}
+  .drawer.open{transform:none}
+  .dh{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .dh .ix{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--muted)}
+  .dh .sp{flex:1}
+  .dh button{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--line);background:var(--panel2);transition:.15s}
+  .dh button:hover{background:var(--panel3)}
+  .dh button svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:2}
+  .dimg{position:relative;background:var(--panel3);display:grid;place-items:center;min-height:180px;max-height:46vh;overflow:hidden}
+  .dimg img{max-height:46vh;max-width:100%;object-fit:contain}
+  .dimg .fs{position:absolute;right:10px;bottom:10px;background:rgba(20,17,13,.76);color:#fff;font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:99px;display:inline-flex;gap:5px;align-items:center}
+  .dimg .fs svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+  .dbody{padding:16px 16px 26px;overflow:auto;display:flex;flex-direction:column;gap:13px}
+  .fld{display:flex;flex-direction:column;gap:6px}
+  .fld label{font-size:11px;font-family:"JetBrains Mono",monospace;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+  .fld input,.fld select,.fld textarea{background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:9px 12px;font-size:13.5px;outline:none;width:100%;transition:.15s}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent);background:var(--panel);box-shadow:0 0 0 3px var(--accent-soft)}
+  .fld textarea{min-height:70px;resize:vertical}
+  .dmeta{font-size:11.5px;color:var(--muted);font-family:"JetBrains Mono",monospace;display:flex;flex-wrap:wrap;gap:12px}
+  .dact{display:flex;gap:9px;flex-wrap:wrap;padding-top:4px}
+  .dact button{font-size:13px;font-weight:600;padding:10px 16px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);transition:.15s}
+  .dact button:hover{border-color:var(--ink)}
+  .dact .p{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+  .dact .p:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+  .dact .danger:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .tagbox{display:flex;flex-wrap:wrap;gap:6px}
+  .tagbox i{font-style:normal;font-size:11.5px;background:var(--panel3);border:1px solid var(--line);color:var(--ink2);padding:4px 9px;border-radius:99px;display:inline-flex;align-items:center;gap:5px}
+  .tagbox i button{color:var(--muted);font-size:14px;line-height:1;width:14px;text-align:center}
+  .tagbox i button:hover{color:var(--accent-ink)}
+
+  /* side · 维度树 */
+  .side .dgrp{margin:1px 0}
+  .side .dgh{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:8px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.12em;color:var(--muted);cursor:pointer;width:100%}
+  .side .dgh:hover{background:var(--hover)}
+  .side .dgh svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4;transition:.2s var(--ease)}
+  .side .dgrp.fold .dgh svg{transform:rotate(-90deg)}
+  .side .dgrp.fold .dv{display:none}
+  .side .dgh em{font-style:normal;margin-left:auto;font-size:10px;color:var(--accent-ink);font-weight:700}
+  .side .dv{display:flex;flex-direction:column;gap:1px;padding-left:5px}
+  .side .fvb{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;font-size:13px;color:var(--ink2);width:100%;transition:.15s}
+  .side .fvb:hover{background:var(--hover)}
+  .side .fvb.on{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+  .side .fvb .cnt{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--muted)}
+  .side .fvb.on .cnt{color:var(--accent-ink)}
+
+  /* 专辑封面墙 */
+  .albgrid{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));align-content:start}
+  .albcard{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden;cursor:pointer;transition:.18s var(--ease)}
+  .albcard:hover{transform:translateY(-2px);box-shadow:0 16px 34px -22px rgba(27,24,19,.6);border-color:var(--line2)}
+  .albcard .th{position:relative;aspect-ratio:4/3;background:var(--panel3);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px}
+  .albcard .th img{width:100%;height:100%;object-fit:cover}
+  .albcard .th .ph{display:grid;place-items:center;background:var(--panel2);color:var(--muted);font-size:11px;font-weight:300;text-align:center;padding:6px}
+  .albcard .bd{padding:11px 13px 13px;display:flex;align-items:center;gap:8px}
+  .albcard .bd .sw{width:10px;height:10px;border-radius:99px;flex:0 0 auto}
+  .albcard .bd b{font-size:13.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .albcard .bd span{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted)}
+
+  /* drawer · 专辑 + 维度 */
+  .albpicks{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .albpicks button{font-size:11.5px;padding:5px 11px;border-radius:99px;border:1px solid var(--line2);background:var(--panel2);color:var(--ink2);transition:.15s;display:inline-flex;align-items:center;gap:6px}
+  .albpicks button:hover{border-color:var(--ink)}
+  .albpicks button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .albpicks button .sw{width:9px;height:9px;border-radius:99px}
+  .albpicks button.on .sw{box-shadow:0 0 0 1.5px rgba(255,255,255,.6)}
+  .albpicks .hint{font-size:12px;color:var(--muted);font-weight:300}
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .fgrid > *{min-width:0}
+  .swatchdot{width:14px;height:14px;border-radius:99px;display:inline-block;vertical-align:-2px;margin-right:6px;box-shadow:0 0 0 1px var(--line2)}
+  /* 卡片 · 一键加入专辑 */
+  .cell .addalb{position:absolute;right:7px;top:36px;width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.94);display:grid;place-items:center;opacity:0;transform:translateY(-3px);transition:.15s var(--ease);z-index:4;box-shadow:0 3px 10px rgba(27,24,19,.22)}
+  .cell:hover .addalb{opacity:1;transform:none}
+  .cell .addalb svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:1.9}
+  .cell .addalb:hover{background:var(--ink)}
+  .cell .addalb:hover svg{stroke:var(--bg)}
+
+  /* importer */
+  .imp{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(20,17,13,.6);backdrop-filter:blur(5px);padding:20px}
+  .imp.open{display:flex}
+  .imp .pn{background:var(--bg);border:1px solid var(--line2);border-radius:18px;width:min(640px,96vw);max-height:92vh;overflow:auto;box-shadow:0 40px 90px -40px rgba(0,0,0,.7)}
+  .imp .ph{display:flex;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:2}
+  .imp .ph h3{font-family:"Bricolage Grotesque","Noto Sans SC",sans-serif;font-weight:800;font-size:18px}
+  .imp .ph .x{margin-left:auto;width:36px;height:36px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--line2);background:var(--panel)}
+  .imp .ph .x svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:2}
+  .imp .pb{padding:20px}
+  .zone{border:2px dashed var(--line2);border-radius:14px;background:var(--panel2);padding:30px 20px;transition:.2s;cursor:pointer;text-align:center}
+  .zone:hover,.zone.over{border-color:var(--accent);background:var(--accent-soft)}
+  .zone b{display:block;font-size:15px}
+  .zone small{display:block;margin-top:6px;font-size:12px;color:var(--muted);font-weight:300}
+  .ulrow{display:flex;gap:9px;margin-top:16px}
+  .ulrow input{flex:1;background:var(--panel);border:1px solid var(--line2);border-radius:9px;padding:10px 13px;font-size:13.5px;outline:none}
+  .ulrow input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .tips{margin-top:18px;font-size:12.5px;color:var(--muted);font-weight:300;line-height:1.75}
+  .tips b{color:var(--ink);font-weight:600}
+  .tips kbd{font-family:"JetBrains Mono",monospace;font-size:11px;background:var(--panel);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:2px 6px}
+  .ilist{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .ilist .it{width:70px;height:70px;border-radius:10px;overflow:hidden;position:relative;border:1px solid var(--line);background:var(--panel3)}
+  .ilist .it img{width:100%;height:100%;object-fit:cover}
+  .ilist .it .n{position:absolute;left:3px;top:3px;background:var(--accent);color:var(--accent-on);font-size:9px;font-weight:700;border-radius:99px;padding:1px 5px}
+
+  /* lightbox */
+  .lb{position:fixed;inset:0;z-index:300;display:none;background:rgba(16,13,10,.93);backdrop-filter:blur(7px)}
+  .lb.open{display:grid;grid-template-rows:auto 1fr}
+  .lb .t{display:flex;align-items:center;gap:12px;padding:13px 18px;color:#fff}
+  .lb .t .ix{font-family:"JetBrains Mono",monospace;font-size:12px;opacity:.7}
+  .lb .t .sp{flex:1}
+  .lb .t button{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.12);transition:.15s}
+  .lb .t button:hover{background:rgba(255,255,255,.26)}
+  .lb .t button svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2}
+  .lb .st{position:relative;display:grid;place-items:center;min-height:0;padding:0 18px 18px}
+  .lb .st img{max-width:min(1400px,95vw);max-height:88vh;object-fit:contain;border-radius:10px}
+  .lb .pnav{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:99px;display:grid;place-items:center;background:rgba(255,255,255,.14)}
+  .lb .pnav:hover{background:rgba(255,255,255,.3)}
+  .lb .pnav.l{left:20px}.lb .pnav.r{right:20px}
+  .lb .pnav svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2}
+
+  /* dialog */
+  .dlg{position:fixed;inset:0;z-index:220;display:none;align-items:center;justify-content:center;background:rgba(20,17,13,.55);backdrop-filter:blur(5px)}
+  .dlg.open{display:flex}
+  .dlg .pn{background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:22px;width:min(420px,92vw);box-shadow:0 30px 70px -30px rgba(0,0,0,.7)}
+  .dlg h3{font-family:"Bricolage Grotesque","Noto Sans SC",sans-serif;font-weight:800;font-size:17px}
+  .dlg p{font-size:13px;color:var(--muted);font-weight:300;margin-top:8px;line-height:1.6}
+  .dlg input{width:100%;margin-top:14px;background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:10px 13px;font-size:14px;outline:none}
+  .dlg input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .dlg .a{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}
+  .dlg .a button{font-size:13.5px;font-weight:600;padding:10px 18px;border-radius:9px;border:1px solid var(--line2);background:var(--panel2)}
+  .dlg .a button.p{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+  .dlg .a button.p:hover{background:var(--accent-hover)}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,18px);z-index:400;display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:500;padding:11px 17px;border-radius:99px;box-shadow:0 18px 40px -18px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:.28s}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .toast svg{width:15px;height:15px;stroke:var(--accent-on-inv);fill:none;stroke-width:2.4}
+
+  @media(max-width:820px){
+    :root{--side:250px;--top:56px}
+    .brand .w{display:none}
+    .iconbtn{display:grid}
+    .side{position:fixed;top:var(--top);bottom:0;left:0;z-index:70;transform:translateX(-102%);transition:.28s var(--ease);box-shadow:24px 0 60px -30px rgba(0,0,0,.5)}
+    .side.open{transform:none}
+    .top select.sel{display:none}
+    .content{padding:14px 14px 90px}
+  }
+</style>
+<script>
+/* 提前套用主题偏好，避免刷新时闪白 */
+try{
+  var _pf=JSON.parse(localStorage.getItem('leiji:prefs')||'{}'), _rt=document.documentElement;
+  if(_pf.theme==='dark') _rt.setAttribute('data-theme','dark');
+  if(_pf.accent==='lime') _rt.setAttribute('data-accent','lime');
+}catch(e){}
+</script>
+</head>
+<body>
+
+<header class="top">
+  <button class="iconbtn" id="sideToggle" aria-label="分类"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <a class="brand" href="#"><span class="mark">磊</span><span class="w"><b>磊集 LEIJI</b><i>素材台</i></span></a>
+  <label class="search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="搜索标题 / 备注 / 标签 / 来源…" autocomplete="off">
+  </label>
+  <span class="sp"></span>
+  <select class="sel" id="sort" title="排序">
+    <option value="new">最新采集</option>
+    <option value="old">最早采集</option>
+    <option value="name">按名称</option>
+  </select>
+  <div class="seg" id="dens" title="缩略图大小">
+    <button data-d="0" title="小">▪</button>
+    <button data-d="1" class="on" title="中">▪▪</button>
+    <button data-d="2" title="大">▪▪▪</button>
+  </div>
+  <div class="seg" id="vmode" title="视图">
+    <button data-v="grid" class="on" title="网格"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg></button>
+    <button data-v="wf" title="瀑布流"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="9" rx="1.5"/><rect x="14" y="4" width="6" height="5" rx="1.5"/><rect x="14" y="13" width="6" height="7" rx="1.5"/><rect x="4" y="17" width="6" height="3" rx="1.5"/></svg></button>
+  </div>
+  <button class="ibtn" id="accentBtn" title="强调色"><span class="adot"></span></button>
+  <button class="ibtn" id="themeBtn" title="切换深色模式"><svg viewBox="0 0 24 24"><path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/></svg></button>
+  <button class="btn-acc" id="openImp"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>采集</button>
+</header>
+
+<div class="shell">
+  <aside class="side" id="side">
+    <div class="glab">素材库</div>
+    <div id="navLib"></div>
+    <div class="glab">分类 <button id="newCat" title="新建分类">＋</button></div>
+    <div id="navCats"></div>
+    <div class="glab">专辑 <button id="newAlb" title="新建专辑">＋</button></div>
+    <div id="navAlbs"></div>
+    <div class="glab">维度</div>
+    <div id="navDims"></div>
+    <div class="glab">参考</div>
+    <div id="navRef"></div>
+    <div class="side-foot" id="foot">本地存储 · 不上传</div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="bar">
+      <div class="r1">
+        <h2 id="vTitle">全部素材</h2>
+        <span class="n" id="vCount"></span>
+        <span class="sp"></span>
+        <button class="tgl" id="selToggle">选择</button>
+        <button class="tgl" id="impBtn">＋ 采集</button>
+      </div>
+      <div class="r2" id="r2"></div>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<!-- selection bar -->
+<div class="selbar" id="selbar">
+  <b id="selN">已选 0</b>
+  <button class="b2" id="selMove">移动到分类</button>
+  <button class="b2" id="selAlb">加入专辑</button>
+  <button class="b2" id="selTag">加标签</button>
+  <button class="b2 danger" id="selDel">删除</button>
+  <button class="x" id="selX"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</div>
+<div class="pop" id="pop"></div>
+
+<!-- drawer -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <div class="dh">
+    <button id="dPrev" title="上一张 (←)"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button id="dNext" title="下一张 (→)"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    <span class="ix" id="dIdx"></span>
+    <span class="sp"></span>
+    <button id="dClose" title="关闭 (Esc)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="dimg"><img id="dImg" alt=""><button class="fs" id="dFs"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>全屏</button></div>
+  <div class="dbody" id="dbody">
+    <div class="fld"><label>标题</label><input id="dTitle" placeholder="给这张参考起个名字"></div>
+    <div class="fld"><label>分类</label><select id="dCat"></select></div>
+    <div class="fld"><label>专辑 · 可多选</label><div class="albpicks" id="dAlbBox"></div></div>
+    <div class="fld"><label>维度</label><div class="fgrid" id="dFacets"></div></div>
+    <div class="fld"><label>标签</label><div class="tagbox" id="dTagBox"></div><div style="display:flex;gap:8px;margin-top:6px"><input id="dTagInput" placeholder="输入标签后回车添加"><button class="tgl" id="dTagAdd">添加</button></div></div>
+    <div class="fld"><label>来源 / 作者</label><div class="fgrid"><input id="dSrcName" placeholder="来源站点"><input id="dAuthor" placeholder="作者 / 出处"></div><div id="dSrc" style="font-size:12.5px;margin-top:7px"></div></div>
+    <div class="fld"><label>备注 / 为什么收集</label><textarea id="dNote" placeholder="记录这张参考的看点或用途…"></textarea></div>
+    <div class="dmeta" id="dMeta"></div>
+    <div class="dact">
+      <button class="p" id="dSave">保存修改</button>
+      <button id="dDl">下载原图</button>
+      <button class="danger" id="dDel">删除</button>
+    </div>
+  </div>
+</aside>
+
+<!-- importer -->
+<div class="imp" id="imp">
+  <div class="pn">
+    <div class="ph"><h3>采集参考图</h3><button class="x" id="impX"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="pb">
+      <div class="zone" id="impZone"><b>拖进来 / 点这里选图片</b><small>可多选；截图后直接按 Ctrl+V 也能粘进来</small></div>
+      <div class="ulrow"><input id="urlIn" placeholder="或粘贴一个图片 / 网页网址…"><button class="btn-acc" id="urlAdd">存网址</button></div>
+      <div class="tips">
+        <b>采集方式</b><br>
+        1. 别处右键「复制图片」→ 回到这里 <kbd>Ctrl</kbd>+<kbd>V</kbd>；<br>
+        2. 微信 / QQ / 系统截图，复制后 <kbd>Ctrl</kbd>+<kbd>V</kbd>；<br>
+        3. 图片存本地后拖进来，或点上方选图批量导入。<br>
+        采集后会按「<b>主色</b>」自动归类配色，可在左侧按颜色筛。
+      </div>
+      <div class="ilist" id="impList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- lightbox -->
+<div class="lb" id="lb">
+  <div class="t"><span class="ix" id="lbIdx"></span><span class="sp"></span><button id="lbX"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="st" id="lbStage"><button class="pnav l" id="lbPrev"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><img id="lbImg" alt=""><button class="pnav r" id="lbNext"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
+</div>
+
+<div class="dlg" id="dlg"><div class="pn"><h3 id="dlgT"></h3><p id="dlgM"></p><input id="dlgI" class="hide" autocomplete="off"><div class="a"><button id="dlgC">取消</button><button id="dlgK" class="p">确定</button></div></div></div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span id="toastMsg"></span></div>
+
+<script>
+const IMG = (prompt, size) =>
+  `https://trae-api-cn.mchost.guru/api/ide/v1/tool_text_to_image?prompt=${encodeURIComponent(prompt)}&image_size=${size}`;
+
+const CATS = [
+  { key:'all',       label:'全部',   color:'#17140E' },
+  { key:'layout',      label:'排版',   color:'#E5431F' },
+  { key:'type',        label:'字体',   color:'#B4761A' },
+  { key:'logo',        label:'LOGO',   color:'#1E3A8A' },
+  { key:'color',       label:'色彩',   color:'#7A2E4E' },
+  { key:'poster',      label:'海报',   color:'#6E6A32' },
+  { key:'package',     label:'包装',   color:'#0F766E' },
+  { key:'ecommerce',   label:'电商',   color:'#C2410C' },
+  { key:'ui',          label:'界面',   color:'#4338CA' },
+  { key:'editorial',   label:'出版',   color:'#8A5A2B' },
+  { key:'illustration',label:'插画',   color:'#BE123C' },
+  { key:'motion',      label:'动效',   color:'#A21CAF' },
+  { key:'signage',     label:'导视',   color:'#0369A1' },
+  { key:'model3d',     label:'3D建模', color:'#6D28D9' },
+  { key:'ip',          label:'IP设计', color:'#DB2777' },
+  { key:'storefront',  label:'门头',   color:'#B45309' },
+  { key:'culturewall', label:'文化墙', color:'#15803D' },
+  { key:'merch',       label:'美陈',   color:'#0891B2' },
+];
+
+const ITEMS = [
+  /* ---------- 排版 · Layout ---------- */
+  { t:'瑞士格栅 editorial 排版', cat:'layout', wide:true,
+    d:'强对比无衬线大标题 + 严格模块化网格，信息层级清晰，是排版基本功的范本。',
+    use:'先定网格再排内容，用字重和字号拉开层级，而不是靠堆颜色。',
+    tags:['网格系统','黑白','层级'], src:'花瓣', url:'https://huaban.com/',
+    p:'Swiss style editorial magazine spread, bold black grotesque headline, strict modular grid, black and white high contrast print design' },
+  { t:'出血裁切实验字体海报', cat:'layout',
+    d:'把超大号字压到画布边缘制造张力，适合活动、展览这类需要态度的视觉。',
+    use:'把标题放大到不合常理、甚至被裁掉一部分，反而更抓眼。',
+    tags:['超大字号','裁切','riso'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Experimental typographic poster, oversized condensed letters cropped by canvas edge, red and cream risograph print texture' },
+  { t:'极简书籍封面', cat:'layout',
+    d:'大量留白 + 发丝分隔线 + 小号衬线标题，克制即高级。',
+    use:'留白不是空，是给主角让位；一根发丝线就能撑起秩序感。',
+    tags:['留白','发丝线','衬线'], src:'花瓣', url:'https://huaban.com/',
+    p:'Minimal book cover design, generous negative space, thin hairline rules, single small serif title, off-white paper texture' },
+  /* ---------- 字体 · Typography ---------- */
+  { t:'曲线衬线字体样张', cat:'type', wide:true,
+    d:'70 年代风格的液态衬线，柔和、圆润、有人味——2026 年最亮的字体方向。',
+    use:'标题用有表情的衬线，正文配中性无衬线，一冷一热最耐看。',
+    tags:['曲线衬线','复古','样张'], src:'字由', url:'https://www.hellofont.cn/',
+    p:'Type specimen poster showing a funky curvy serif typeface, large glyphs, black ink on warm cream paper, studio presentation' },
+  { t:'动态感排版构成', cat:'type',
+    d:'字母拉伸、旋转、堆叠，让字体本身成为主视觉，几乎像动态图形。',
+    use:'把文字当图形排，允许重叠和旋转，但只留一个视觉重心。',
+    tags:['动态','堆叠','撞色'], src:'字由', url:'https://www.hellofont.cn/',
+    p:'Bold kinetic typography composition, letters stretched rotated and layered, acid yellow and black, swiss studio poster style' },
+  { t:'编辑体衬线细节', cat:'type',
+    d:'高对比笔画、锐利衬脚，适合杂志与出版物的正文与标题。',
+    use:'看笔画粗细对比（腰线）判断气质：对比越高越正式、越优雅。',
+    tags:['编辑体','高对比','出版物'], src:'字体天下', url:'https://www.fonts.net.cn/',
+    p:'Elegant editorial serif font specimen, high contrast strokes, close-up letterform detail, warm paper texture, print design' },
+  /* ---------- LOGO · 品牌识别 ---------- */
+  { t:'几何字母组合标记', cat:'logo',
+    d:'用一条连续线或基本几何构建的极简 monogram，耐看、易延展。',
+    use:'先在纯黑白下成立，再谈延展；能缩到 16px 还认得出才算过关。',
+    tags:['字标','几何','极简'], src:'标志情报局', url:'https://www.logonews.cn/',
+    p:'Minimal geometric monogram logo mark, single continuous line, black on cream, brand identity presentation sheet' },
+  { t:'抽象符号标志', cat:'logo',
+    d:'用简单形状拼出的抽象记号，色彩明快，记忆点强。',
+    use:'抽象符号要能被一句话解释清楚，否则只是好看的涂鸦。',
+    tags:['抽象','符号','扁平'], src:'标志情报局', url:'https://www.logonews.cn/',
+    p:'Playful abstract logo symbol built from simple shapes, bold flat colors on colored background, design portfolio presentation' },
+  { t:'自定义格罗特体字标', cat:'logo', wide:true,
+    d:'紧字距的自定义无衬线 wordmark，配品牌规范页呈现，是品牌识别的常见解法。',
+    use:'改字距和字重就能做出只属于这个品牌的排他感，成本极低。',
+    tags:['字标','紧字距','规范'], src:'标志情报局', url:'https://www.logonews.cn/',
+    p:'Wordmark logotype in custom grotesque letters, tight tracking, black on off-white, brand guideline sheet layout' },
+  /* ---------- 色彩 · Color ---------- */
+  { t:'撕纸色卡平铺', cat:'color',
+    d:'从实物色卡里取色，比纯数字配色更有温度，适合定品牌主色。',
+    use:'主色 1 个 + 辅色 1~2 个 + 中性灰；超过 3 个亮色就难控。',
+    tags:['色卡','大地色','平铺'], src:'中国色', url:'https://www.zhongguose.com/',
+    p:'Minimal color palette swatch composition, torn paper strips of warm earthy colors, flat lay on cream background, top view' },
+  { t:'渐变网格海报', cat:'color',
+    d:'柔和渐变的 mesh 色彩 + 颗粒质感，营造电影感的氛围底。',
+    use:'渐变别用纯色对撞，中间隔一个过渡色，再加颗粒去掉塑料感。',
+    tags:['渐变','颗粒','氛围'], src:'UI中国', url:'https://www.ui.cn/',
+    p:'Gradient mesh poster art, smooth cinematic color blend, film grain texture, abstract organic shapes, print design' },
+  { t:'双色调半调海报', cat:'color',
+    d:'两种颜色 + 网点，成本低但冲击力强，平面海报的性价比之选。',
+    use:'双色印刷先做灰度稿，确认明度差足够，再套颜色。',
+    tags:['双色调','半调','高对比'], src:'花瓣', url:'https://huaban.com/',
+    p:'Bold duotone poster, vermilion and ink black, halftone dot texture, graphic design print, swiss style' },
+  /* ---------- 海报 · Poster ---------- */
+  { t:'粗野主义文化活动海报', cat:'poster', wide:true,
+    d:'超大堆叠字体 + 复印机质感，粗粝、直接、态度鲜明。',
+    use:'主动做旧：错位套印、噪点、撕边，用粗糙换取真实感。',
+    tags:['粗野主义','堆叠','复印质感'], src:'花瓣', url:'https://huaban.com/',
+    p:'Brutalist cultural event poster, huge stacked type, raw black and white xerox texture, swiss punk graphic design' },
+  { t:'电影感片单海报', cat:'poster',
+    d:'像片头字幕定格的一帧，柔和颗粒 + 亲密构图，适合叙事型内容。',
+    use:'把观者放进画面内部，用低饱和暖色讲一个私人故事。',
+    tags:['电影感','片头','叙事'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Cinematic film poster layout with title sequence typography, soft grain, warm muted palette, editorial intimate composition' },
+  { t:'拼贴艺术展览海报', cat:'poster',
+    d:'剪纸形状 + 撞色色块，复古与现代交织，手工感让人印象深刻。',
+    use:'拼贴的呼吸感来自不全对齐，留一点随机反而更生动。',
+    tags:['拼贴','色块','手工感'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Art exhibition poster, paper collage elements, cut paper shapes, bold color blocks, retro modern design' },
+  /* ---------- 包装 · Package ---------- */
+  { t:'极简产品包装', cat:'package',
+    d:'奶白盒身 + 发丝文字，靠材质和版式说话，高端护肤常用。',
+    use:'少用大红大绿，用纸纹 + 压凹 + 留白来传递贵感。',
+    tags:['包装','极简','高级感'], src:'优设', url:'https://www.uisdc.com/',
+    p:'Minimal product packaging mockup, cream box with hairline typography, soft studio shadow, elegant premium branding' },
+  { t:'几何图案美妆包装', cat:'package',
+    d:'用重复几何图形做系列包装，颜色统一、货架识别度高。',
+    use:'系列感 = 同一纹样 + 换主色，一眼能看出是一家的。',
+    tags:['系列感','几何','平铺'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Colorful cosmetic package design flat lay, pastel palette, geometric pattern, clean studio product photography' },
+  { t:'年报封面烫金工艺', cat:'package',
+    d:'压凹几何纹理 + 烫金，用工艺提升厚重的正式感。',
+    use:'工艺是摸得到的品牌，先想清楚哪里该凸、哪里该亮。',
+    tags:['年报','烫金','工艺'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Annual report cover design, embossed geometric pattern, deep ink blue and gold foil stamping, premium print design, macro detail' },
+  /* ---------- 电商 · E-commerce ---------- */
+  { t:'电商详情页版式', cat:'ecommerce', wide:true,
+    d:'干净网格 + 大图 + 粗标题，产品卖点一眼看懂，转化导向。',
+    use:'首屏只讲一个卖点；用留白和字号建立阅读顺序。',
+    tags:['详情页','网格','转化'], src:'花瓣', url:'https://huaban.com/',
+    p:'Modern e-commerce product detail page layout design mockup, clean grid, large product photo and bold typography, minimal' },
+  { t:'极简产品主图', cat:'ecommerce',
+    d:'米色系 + 优雅衬线标题，做护肤、家居类主图的稳妥解法。',
+    use:'主图缩到手机大小再看一遍，还清晰才算合格。',
+    tags:['主图','米色','衬线'], src:'花瓣', url:'https://huaban.com/',
+    p:'Sleek product poster design for skincare brand, minimal beige tones, elegant serif headline, soft shadows, studio photo' },
+  { t:'大促战报视觉', cat:'ecommerce',
+    d:'高饱和色块 + 大字报数字，电商大促的喊话式视觉。',
+    use:'促销靠信息密度和色块分割，价格与利益点必须最大。',
+    tags:['促销','大字报','高饱和'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Bold e-commerce sale banner design, huge bold discount numbers, vibrant color blocks, high energy promotional layout, graphic design' },
+  /* ---------- 界面 · UI ---------- */
+  { t:'杂志感移动端界面', cat:'ui',
+    d:'奶油 + 黑 + 优雅排版，把编辑设计语言搬进 App，安静高级。',
+    use:'栅格与字阶和平面设计通用，把杂志的呼吸感搬到手机上。',
+    tags:['移动端','编辑风','奶油色'], src:'UI中国', url:'https://www.ui.cn/',
+    p:'Modern mobile app UI design screens, minimal editorial layout, cream and black, elegant typography, app store style mockup' },
+  { t:'数据仪表盘概念', cat:'ui',
+    d:'单色系统 + 一点点强调色，数据可视化也能很克制。',
+    use:'只用一种强调色标记最重要的那个数，别让每个数都抢眼。',
+    tags:['仪表盘','单色','强调色'], src:'UI中国', url:'https://www.ui.cn/',
+    p:'Dashboard web UI concept, clean data visualization cards, monochrome with vermilion accent, minimal interface design' },
+  { t:'品牌落地页首屏', cat:'ui',
+    d:'超大标题 + 单一 CTA + 克制配图，品牌官网首屏的稳妥结构。',
+    use:'首屏只讲三件事：你是谁、给谁、下一步点哪，其余往后放。',
+    tags:['落地页','首屏','CTA'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Modern brand landing page hero section design, oversized headline, single call to action button, minimal layout, editorial typography' },
+  /* ---------- 出版 · Editorial ---------- */
+  { t:'杂志封面编辑设计', cat:'editorial',
+    d:'刊名当固定版式资产 + 每期更换主图，形成杂志的面孔识别。',
+    use:'把刊名的位置和字号固定下来，读者在报摊上一眼就能认出。',
+    tags:['杂志封面','期刊','识别'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Editorial magazine cover design, fixed masthead logo, striking cover photo, strong typographic hierarchy, print magazine' },
+  { t:'书籍护封与装帧', cat:'editorial',
+    d:'护封、书脊、内封一套完整设计，书脊是书架上唯一的广告位。',
+    use:'先设计书脊再设计封面——它决定了书在书架上卖不卖得动。',
+    tags:['装帧','护封','书脊'], src:'TOPYS', url:'https://www.topys.cn/',
+    p:'Book cover and spine design mockup, elegant typography, textured paper, full book jacket layout, editorial print design' },
+  { t:'图文跨页版式', cat:'editorial', wide:true,
+    d:'满版大图 + 首字母下沉，杂志内页最经典的图文关系。',
+    use:'图与文的比例决定阅读节奏：满版图负责停，文字页负责走。',
+    tags:['跨页','满版图','首字下沉'], src:'字体天下', url:'https://www.fonts.net.cn/',
+    p:'Editorial double page spread with full bleed photo and serif drop cap, magazine layout design, elegant typography' },
+  /* ---------- 插画 · Illustration ---------- */
+  { t:'品牌插画系统', cat:'illustration',
+    d:'用统一的线条、配色、角色规范，让插画成为品牌资产而非单张配图。',
+    use:'先定线条粗细、配色和五官规则，再让不同插画师也画得一致。',
+    tags:['品牌插画','系统','一致性'], src:'古田路9号', url:'https://www.gtn9.com/',
+    p:'Brand illustration system, consistent line style and limited color palette, character illustration set, flat vector design' },
+  { t:'编辑插画（概念隐喻）', cat:'illustration',
+    d:'为文章观点服务的概念插画，用隐喻把抽象话题画出来。',
+    use:'先读文案找到那一个核心隐喻，再动笔，别急着画漂亮。',
+    tags:['编辑插画','概念','隐喻'], src:'涂鸦王国', url:'https://www.gracg.com/',
+    p:'Editorial conceptual illustration for a magazine article, metaphorical visual, limited palette, textured print illustration' },
+  { t:'手绘线条包装插画', cat:'illustration',
+    d:'手绘感线条 + 少量填色，给品牌加一点手作与温度。',
+    use:'保留笔触的不完美，比矢量平滑线更有人情味。',
+    tags:['手绘','线条','手作感'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Hand-drawn line illustration for packaging, loose ink strokes, minimal spot color, artisanal and warm feeling, print design' },
+  /* ---------- 动效 · Motion ---------- */
+  { t:'动态 LOGO 演绎', cat:'motion',
+    d:'把静态标志拆解成动画，用于片头、加载页，让品牌活起来。',
+    use:'标志动画的终点必须回到那个静止 LOGO，否则观众记不住。',
+    tags:['动态标志','片头','品牌'], src:'UI中国', url:'https://www.ui.cn/',
+    p:'Animated logo animation keyframes, geometric mark assembling, motion design frames, dark background, brand motion identity' },
+  { t:'动态字体海报', cat:'motion',
+    d:'文字随节奏变形、位移，字体本身就是动态主角。',
+    use:'动效只改一个维度——位置或比例，多了就乱。',
+    tags:['动态字体','节奏','变形'], src:'花瓣', url:'https://huaban.com/',
+    p:'Kinetic typography motion design frames, bold type moving and scaling, high contrast color, motion poster stills' },
+  { t:'品牌动态图形系统', cat:'motion',
+    d:'一套可复用的转场与图形运动规则，让所有视频长一个样。',
+    use:'定义 2~3 个基础动作（擦除、缩放、滑动），全品牌统一用。',
+    tags:['动态规范','转场','系统'], src:'iconfont', url:'https://www.iconfont.cn/',
+    p:'Brand motion graphics system, reusable shape transitions and animated elements, bold colors, grid based motion design' },
+  /* ---------- 导视 · Signage & Information ---------- */
+  { t:'空间导视系统', cat:'signage',
+    d:'楼层、方向、功能区一套标识，字体与色彩需要远距离可读。',
+    use:'站到 5 米外看：字号够不够大、对比够不够强，这是第一原则。',
+    tags:['导视','空间','可读性'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Wayfinding signage system design, directional signs and floor numbers, high contrast minimal typography, environmental graphic design' },
+  { t:'图标与信息标识', cat:'signage',
+    d:'用统一网格绘制的公共图标系统，跨语言、跨文化通用。',
+    use:'所有图标放在同一栅格里画，笔画粗细统一了才像一套。',
+    tags:['图标系统','网格','通用'], src:'站酷', url:'https://www.zcool.com.cn/',
+    p:'Public icon system design on a grid, consistent stroke weight, minimal pictograms, black on white, wayfinding icons' },
+  { t:'信息图与数据可视化', cat:'signage',
+    d:'把复杂数据翻译成一张图，讲清谁大谁小、往哪走。',
+    use:'先想清楚要说的那一句话，再决定用柱状、折线还是地图。',
+    tags:['信息图','数据可视化','叙事'], src:'数英', url:'https://www.digitaling.com/',
+    p:'Data visualization infographic poster, clear charts and hierarchy, limited color palette, editorial information design' },
+  /* ---------- 3D 建模 · 3D ---------- */
+  { t:'产品级 3D 渲染图', cat:'model3d', wide:true,
+    d:'用 HDR 环境光加材质贴图，把产品渲染到接近实拍，是电商与广告的主流做法。',
+    use:'渲染的真实感七成靠打光和环境反射，材质参数反而是其次。',
+    tags:['产品渲染','HDR','材质'], src:'3D溜溜', url:'https://www.3d66.com/',
+    img:'https://images.pexels.com/photos/28918449/pexels-photo-28918449.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Photorealistic 3D product render, studio HDR lighting, glossy material, soft reflections, commercial CGI, high detail' },
+  { t:'潮玩 IP 手办建模', cat:'model3d',
+    d:'把 2D 形象做成可打印、可量产的立体手办，从造型到分件都要考虑工艺。',
+    use:'立体化先看剪影：剪影能立住，这个 IP 才做得成玩具。',
+    tags:['手办','造型','分件'], src:'3D溜溜', url:'https://www.3d66.com/',
+    img:'https://images.pexels.com/photos/28655002/pexels-photo-28655002.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'3D collectible toy figure modeling, stylized character sculpture, clay render and textured version, designer toy, studio lighting' },
+  { t:'抽象 3D 图形主视觉', cat:'model3d',
+    d:'几何体加软硬材质加撞色，做海报和品牌视觉的立体主角。',
+    use:'软硬材质对比（比如金属配硅胶）能立刻拉出高级感。',
+    tags:['抽象几何','软材质','主视觉'], src:'古田路9号', url:'https://www.gtn9.com/',
+    img:'https://images.pexels.com/photos/13180245/pexels-photo-13180245.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Abstract 3D shape key visual, soft matte and metallic materials, bold color, studio render, graphic design poster' },
+  /* ---------- IP 设计 · IP ---------- */
+  { t:'品牌吉祥物形象', cat:'ip', wide:true,
+    d:'一个有性格、有名字、有动作的品牌角色，让品牌被记住、被喜欢。',
+    use:'先定三个性格关键词，再定造型；性格对了，长相才有灵魂。',
+    tags:['吉祥物','性格','延展'], src:'古田路9号', url:'https://www.gtn9.com/',
+    img:'https://images.pexels.com/photos/12079501/pexels-photo-12079501.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Cute brand mascot character design, personality sheet with poses and expressions, flat vector, brand IP design' },
+  { t:'IP 三视图与规范', cat:'ip',
+    d:'正、侧、背三视图加比例与配色规范，是 IP 能做周边、能授权的基础。',
+    use:'三视图必须标准：比例一乱，后续所有周边都会走形。',
+    tags:['三视图','规范','比例'], src:'站酷', url:'https://www.zcool.com.cn/',
+    img:'https://images.pexels.com/photos/6593561/pexels-photo-6593561.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Character IP design turnaround sheet, front side back views, color palette and proportion guide, clean vector character design' },
+  { t:'IP 表情包与延展', cat:'ip',
+    d:'把 IP 做成表情、贴纸、周边，让小角色真正进入日常使用。',
+    use:'表情包是最便宜的传播：情绪越准，用户越愿意用。',
+    tags:['表情包','贴纸','周边'], src:'花瓣', url:'https://huaban.com/',
+    img:'https://images.pexels.com/photos/14602294/pexels-photo-14602294.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Character sticker and emoji set design, consistent mascot IP, expressive poses, flat illustration, colorful' },
+  /* ---------- 门头设计 · Storefront ---------- */
+  { t:'品牌门店门头', cat:'storefront', wide:true,
+    d:'字标加材质加灯光一体，门头是店铺最贵、也最值钱的一张海报。',
+    use:'门头要在三秒内说清「我是谁、卖什么」，字号和亮度是第一优先级。',
+    tags:['门头','发光字','材质'], src:'建E网', url:'https://www.justeasy.cn/',
+    img:'https://images.pexels.com/photos/18379886/pexels-photo-18379886.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Brand storefront design, illuminated channel letter signage, facade material detail, night view, retail shop entrance' },
+  { t:'街边店招与橱窗', cat:'storefront',
+    d:'在有限门面里用色彩和排版做出辨识度，是街边小店的关键。',
+    use:'门头配色不超过三色，主色要和周边店铺错开，避免撞脸。',
+    tags:['店招','橱窗','辨识度'], src:'站酷', url:'https://www.zcool.com.cn/',
+    img:'https://images.pexels.com/photos/28153483/pexels-photo-28153483.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Street shop storefront signage and window display, bold color-block facade, custom typography, urban retail design' },
+  { t:'门牌与导视系统', cat:'storefront',
+    d:'从大楼入口到楼层指引，一套材质统一的标识让空间更专业。',
+    use:'室外用金属亚克力、室内用木与磨砂，材质统一了才有系统感。',
+    tags:['门牌','材质','系统'], src:'建E网', url:'https://www.justeasy.cn/',
+    img:'https://images.pexels.com/photos/11536995/pexels-photo-11536995.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Architectural signage and door plate system, unified material and typography, building entrance wayfinding, minimal design' },
+  /* ---------- 文化墙 · Culture Wall ---------- */
+  { t:'企业文化墙设计', cat:'culturewall',
+    d:'把价值观、大事记、团队照片排成一面墙，让文化被看见。',
+    use:'文化墙的重点是层级：先让人看到一句主张，再是细节。',
+    tags:['文化墙','图文','层级'], src:'设计本', url:'https://www.shejiben.com/',
+    img:'https://images.pexels.com/photos/10469576/pexels-photo-10469576.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Corporate culture wall design, large typographic mural with timeline and photos, brand colors, office interior graphics' },
+  { t:'党建 / 展馆主题墙', cat:'culturewall', wide:true,
+    d:'主题叙事加立体造型加灯光，把内容做成可看、可拍照的空间装置。',
+    use:'别只贴平面喷绘，加一层立体字或灯带，整面墙就活了起来。',
+    tags:['主题墙','立体','叙事'], src:'站酷', url:'https://www.zcool.com.cn/',
+    img:'https://images.pexels.com/photos/11905911/pexels-photo-11905911.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Exhibition themed wall design, layered 3D lettering, backlit elements, narrative graphics, museum and showroom wall' },
+  { t:'校园与社区文化墙', cat:'culturewall',
+    d:'用插画和色彩把公共空间变成有温度的内容墙，教育与社区常用。',
+    use:'公共文化墙要耐读：远看有画面，近看有内容，两层信息都要有。',
+    tags:['公共空间','插画','色彩'], src:'花瓣', url:'https://huaban.com/',
+    img:'https://images.pexels.com/photos/13113304/pexels-photo-13113304.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'School and community culture wall, colorful illustration mural, friendly typography, public space graphic design' },
+  /* ---------- 美陈设计 · Visual Merchandising ---------- */
+  { t:'节日主题美陈', cat:'merch', wide:true,
+    d:'节日里把商场中庭做成一个主题场景，是聚客与拍照传播的核心手段。',
+    use:'美陈先想拍照点在哪：能出片，才有免费传播。',
+    tags:['美陈','节日','场景'], src:'建E网', url:'https://www.justeasy.cn/',
+    img:'https://images.pexels.com/photos/26150617/pexels-photo-26150617.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Festive mall visual merchandising installation, themed holiday scene, large 3D props and lighting, atrium retail display' },
+  { t:'橱窗陈列 VM', cat:'merch',
+    d:'用道具、灯光、动线把商品讲成一个小故事，提升停留与转化。',
+    use:'橱窗遵循一眼一主题：元素越少，视线越集中，越显高级。',
+    tags:['橱窗','陈列','转化'], src:'设计本', url:'https://www.shejiben.com/',
+    img:'https://images.pexels.com/photos/8311880/pexels-photo-8311880.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Retail window display visual merchandising, themed props and mannequins, dramatic lighting, storytelling composition' },
+  { t:'互动打卡装置', cat:'merch',
+    d:'可参与、可拍照的装置，让空间从「看过」变成「来过」。',
+    use:'装置要考虑人站进去的画面——把人当成构图里的一个元素。',
+    tags:['互动','打卡','装置'], src:'花瓣', url:'https://huaban.com/',
+    img:'https://images.pexels.com/photos/2559741/pexels-photo-2559741.jpeg?auto=compress&cs=tinysrgb&w=900',
+    p:'Interactive photo-op installation, immersive art installation for retail space, mirrors and lights, instagrammable design' },
+];
+
+const TRENDS = [
+  { n:'01', cn:'排版即主角', en:'Typographic Maximalism',
+    d:'极简的安静字体暂退场。超大字号、紧字距、混合字重，标题直接当主视觉用，字体本身即是画面。' },
+  { n:'02', cn:'曲线衬线回潮', en:'Funky Curvy Serifs',
+    d:'70 年代液态衬线复兴，柔和的曲线与不规则笔画，读起来更暖、更有"人味"，是今年最亮眼的字体方向。' },
+  { n:'03', cn:'可变字体', en:'Variable Fonts',
+    d:'一个字体文件就能动态调字重、字宽、光学尺寸，适配从手机到大屏的全部场景，已成为网页设计的标配。' },
+  { n:'04', cn:'标志极繁主义', en:'Logo Maximalism',
+    d:'品牌标识告别保险的极简。鲜明字体、非常规形状、刻意的不对称，甚至用强化腰线的衬线体制造轻微"失调感"来抓眼。' },
+  { n:'05', cn:'编辑式叙事', en:'Editorial & Cinematic',
+    d:'像电影片头字幕定格的一帧：柔和衬线、封面式裁切、轻微颗粒、亲密构图，把设计做成在讲一个故事。' },
+  { n:'06', cn:'少一点完美', en:'Human Imperfection',
+    d:'"一看就是人做的"比"像机器生成的"更被偏爱。手作感、刻意的规整破坏，传递真诚与温度。' },
+  { n:'07', cn:'动态识别', en:'Motion Identity',
+    d:'品牌不再只是一枚静态标志，而是一套会动的规则——片头、加载、转场都沿用同一套运动逻辑，让识别在任何屏幕上统一。' },
+  { n:'08', cn:'可持续包装', en:'Sustainable Packaging',
+    d:'可回收材质、可替换内芯、减少油墨与套色，包装从"好看"进一步走向"负责"，本身也成为品牌叙事的卖点。' },
+  { n:'09', cn:'空间即品牌', en:'Space as Brand',
+    d:'设计不再止于一张平面图。门头、文化墙、美陈把品牌延伸到三维空间，让人"走进去"体验，而不只是"看到"一张海报。' },
+  { n:'10', cn:'IP 人格化', en:'Character IP',
+    d:'品牌越来越像一个"人"：有名字、有性格、有表情包。IP 形象成为连接用户的情感入口，也让周边与授权成为新的生意。' },
+  { n:'11', cn:'3D 质感常态化', en:'Mainstream 3D',
+    d:'3D 渲染不再是特效专属。软材质、超真实光影、抽象几何体大量出现在海报与电商主图里，成为可批量产出的常规武器。' },
+  { n:'12', cn:'环境叙事', en:'Environmental Storytelling',
+    d:'文化墙与展陈从"贴图"升级为"讲故事"：立体字、灯光、图文层级一起上，让一面墙承担完整的品牌叙事。' },
+];
+
+const SOURCES = [
+  { g:'排版 · 版式', list:[
+    { n:'花瓣 · 平面设计', d:'国内最大的灵感采集站，瀑布流看图，版式参考效率高', u:'https://huaban.com/discovery/design' },
+    { n:'站酷 ZCOOL', d:'1800 万设计师社区，作品 / 素材 / 赛事一站齐全', u:'https://www.zcool.com.cn/' },
+    { n:'致设计', d:'电商与视觉设计案例库，落地性强、可直接参考', u:'https://www.zhisheji.com/' },
+    { n:'古田路9号', d:'平面 / 包装 / 品牌专业社区，作品质量高', u:'https://www.gtn9.com/' },
+  ]},
+  { g:'字体 · 字库与排印', list:[
+    { n:'字由 HelloFont', d:'在线字体管理，大量免费商用字体可直接用', u:'https://www.hellofont.cn/' },
+    { n:'求字体', d:'上传图片就能识别字体，找字神器', u:'https://www.qiuziti.com/' },
+    { n:'100font', d:'免费可商用字体汇总，商用放心', u:'https://www.100font.com/' },
+    { n:'字体天下', d:'中英文字库下载，字体风格齐全', u:'https://www.fonts.net.cn/' },
+  ]},
+  { g:'LOGO · 品牌识别', list:[
+    { n:'标志情报局', d:'品牌换标与 LOGO 资讯，看设计背后的策略', u:'https://www.logonews.cn/' },
+    { n:'花瓣 · LOGO', d:'海量 LOGO 采集成板，快速横向对比', u:'https://huaban.com/' },
+    { n:'站酷 · 品牌', d:'完整品牌识别项目，可拆解全流程', u:'https://www.zcool.com.cn/' },
+    { n:'古田路9号 · 品牌', d:'国内品牌与包装设计项目集散地', u:'https://www.gtn9.com/' },
+  ]},
+  { g:'色彩 · 配色', list:[
+    { n:'中国色', d:'中国传统色，点一下直接复制色值', u:'https://www.zhongguose.com/' },
+    { n:'稿定设计', d:'在线配色与设计工具，模板与色板丰富', u:'https://www.gaoding.com/' },
+    { n:'花瓣 · 色彩', d:'配色采集成板，成套参考更实用', u:'https://huaban.com/' },
+    { n:'优设 · 配色', d:'配色原理与教程，补基础最稳', u:'https://www.uisdc.com/' },
+  ]},
+  { g:'出版 · 编辑设计', list:[
+    { n:'站酷 · 出版', d:'书籍装帧与编辑设计案例', u:'https://www.zcool.com.cn/' },
+    { n:'花瓣 · 版式', d:'跨页版式与网格灵感，采集整理方便', u:'https://huaban.com/' },
+    { n:'TOPYS 顶尖文案', d:'创意与内容策划，编辑叙事参考', u:'https://www.topys.cn/' },
+    { n:'数英 DIGITALING', d:'广告营销案例库，看内容怎么讲故事', u:'https://www.digitaling.com/' },
+  ]},
+  { g:'插画 · 图像', list:[
+    { n:'涂鸦王国', d:'国内老牌插画社区，风格多样', u:'https://www.gracg.com/' },
+    { n:'米画师', d:'插画约稿平台，可直接找画师合作', u:'https://www.mihuashi.com/' },
+    { n:'花瓣 · 插画', d:'插画灵感采集，可按风格建板', u:'https://huaban.com/' },
+    { n:'站酷 · 插画', d:'完整插画项目与过程稿', u:'https://www.zcool.com.cn/' },
+  ]},
+  { g:'动效 · UI 交互', list:[
+    { n:'UI中国', d:'用户体验设计平台，含 UI 与动效作品', u:'https://www.ui.cn/' },
+    { n:'iconfont 阿里图标', d:'图标与矢量素材，动效图标可直接用', u:'https://www.iconfont.cn/' },
+    { n:'站酷 · 动效', d:'动效短片与动态设计案例', u:'https://www.zcool.com.cn/' },
+    { n:'优设 UISDC', d:'设计文章与趋势，动效教程多', u:'https://www.uisdc.com/' },
+  ]},
+  { g:'导视 · 信息设计', list:[
+    { n:'站酷 · 导视', d:'导视标识与环境图形完整项目', u:'https://www.zcool.com.cn/' },
+    { n:'设计之家', d:'设计资讯与教程，分类细、更新勤', u:'https://www.sj33.cn/' },
+    { n:'花瓣 · 导视', d:'导视标识采集成板，快速找参考', u:'https://huaban.com/' },
+    { n:'优设 · 信息图', d:'信息图与数据可视化教程与案例', u:'https://www.uisdc.com/' },
+  ]},
+  { g:'3D · 建模与渲染', list:[
+    { n:'3D溜溜网', d:'国内最大的 3D 模型 / 贴图 / 材质素材库', u:'https://www.3d66.com/' },
+    { n:'建E网', d:'室内与空间 3D 模型与效果图素材', u:'https://www.justeasy.cn/' },
+    { n:'CG模型网', d:'CG 模型下载与教程社区', u:'https://www.cgmodel.com/' },
+    { n:'花瓣 · 3D', d:'3D 渲染与建模灵感采集', u:'https://huaban.com/' },
+  ]},
+  { g:'IP · 角色与潮玩', list:[
+    { n:'涂鸦王国', d:'角色与插画创作社区，IP 形象多', u:'https://www.gracg.com/' },
+    { n:'米画师', d:'角色约稿平台，可直接找 IP 设计师', u:'https://www.mihuashi.com/' },
+    { n:'站酷 · IP', d:'IP 形象与潮玩设计案例与赛事', u:'https://www.zcool.com.cn/' },
+    { n:'花瓣 · 潮玩', d:'潮玩 / 手办 / 盲盒灵感采集', u:'https://huaban.com/' },
+  ]},
+  { g:'空间 · 门头与美陈', list:[
+    { n:'建E网', d:'室内 / 空间 3D 模型与效果图素材', u:'https://www.justeasy.cn/' },
+    { n:'设计本', d:'室内设计与实景案例，门头 / 美陈参考', u:'https://www.shejiben.com/' },
+    { n:'花瓣 · 门头美陈', d:'门头 / 店招 / 美陈采集板素材', u:'https://huaban.com/' },
+    { n:'站酷 · 空间', d:'空间与商业美陈设计项目', u:'https://www.zcool.com.cn/' },
+  ]},
+  { g:'环境 · 文化墙与展陈', list:[
+    { n:'设计本', d:'办公与文化空间实景案例', u:'https://www.shejiben.com/' },
+    { n:'花瓣 · 文化墙', d:'文化墙 / 主题墙采集成板', u:'https://huaban.com/' },
+    { n:'站酷 · 展陈', d:'展馆 / 企业文化墙落地案例', u:'https://www.zcool.com.cn/' },
+    { n:'建E网', d:'空间模型与展陈效果图素材', u:'https://www.justeasy.cn/' },
+  ]},
+  { g:'综合 · 灵感与素材', list:[
+    { n:'花瓣', d:'国内最常用的灵感采集工具，强烈推荐', u:'https://huaban.com/discovery/design' },
+    { n:'站酷 ZCOOL', d:'1800 万设计师社区，作品 / 素材 / 赛事', u:'https://www.zcool.com.cn/' },
+    { n:'视觉中国 VCG', d:'正版图片 / 视频 / 字体素材库', u:'https://www.vcg.com/' },
+    { n:'包图网', d:'模板与素材下载，商用授权清晰', u:'https://ibaotu.com/' },
+    { n:'优设 UISDC', d:'设计文章、趋势与素材源导航', u:'https://www.uisdc.com/' },
+  ]},
+];
+
+/* ============================================================
+   APP · 设计师素材台
+   ============================================================ */
+/* ---------- 存储：IndexedDB，file:// 回退 localStorage ---------- */
+const DBN='leiji3';
+let MODE='idb', _db;
+function openDB(){ return _db ||= new Promise((res,rej)=>{
+  const r=indexedDB.open(DBN,2);
+  r.onupgradeneeded=()=>{ const d=r.result; ['refs','cats','albums'].forEach(n=>{ if(!d.objectStoreNames.contains(n)) d.createObjectStore(n,{keyPath:'id'}); }); };
+  r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+const LSK=n=>'leiji3.'+n;
+const lsGet=n=>{ try{ return JSON.parse(localStorage.getItem(LSK(n))||'[]'); }catch(e){ return []; } };
+const lsSet=(n,a)=>{ try{ localStorage.setItem(LSK(n),JSON.stringify(a)); return 1; }catch(e){ toast('本地空间已满，先删掉一些或导出备份'); return 0; } };
+async function boot(){ try{ await openDB(); MODE='idb'; }catch(e){ MODE='ls'; } }
+async function sAll(n){ if(MODE==='idb'){ const d=await openDB(); return new Promise((s,j)=>{ const q=d.transaction(n,'readonly').objectStore(n).getAll(); q.onsuccess=()=>s(q.result||[]); q.onerror=()=>j(q.error); }); } return lsGet(n); }
+async function sPut(n,o){ if(MODE==='idb'){ const d=await openDB(); return new Promise((s,j)=>{ const t=d.transaction(n,'readwrite'); t.objectStore(n).put(o); t.oncomplete=()=>s(); t.onerror=()=>j(t.error); }); } const a=lsGet(n),c=Object.assign({},o); delete c.blob; delete c._url; const i=a.findIndex(x=>x.id===o.id); if(i>=0)a[i]=c; else a.push(c); lsSet(n,a); }
+async function sDel(n,id){ if(MODE==='idb'){ const d=await openDB(); return new Promise((s,j)=>{ const t=d.transaction(n,'readwrite'); t.objectStore(n).delete(id); t.oncomplete=()=>s(); t.onerror=()=>j(t.error); }); } lsSet(n,lsGet(n).filter(x=>x.id!==id)); }
+async function sClear(n){ if(MODE==='idb'){ const d=await openDB(); return new Promise((s,j)=>{ const t=d.transaction(n,'readwrite'); t.objectStore(n).clear(); t.oncomplete=()=>s(); t.onerror=()=>j(t.error); }); } localStorage.removeItem(LSK(n)); }
+
+/* ---------- utils ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- 主题偏好 · 深浅模式 + 强调色 ---------- */
+const PREFS_KEY='leiji:prefs';
+let PREFS={theme:'light',accent:'iron'};
+const ICON_MOON='<svg viewBox="0 0 24 24"><path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/></svg>';
+const ICON_SUN='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>';
+function readPrefs(){ try{ Object.assign(PREFS, JSON.parse(localStorage.getItem(PREFS_KEY)||'{}')); }catch(e){} }
+function applyPrefs(){ const r=document.documentElement;
+  if(PREFS.theme==='dark') r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+  if(PREFS.accent==='lime') r.setAttribute('data-accent','lime'); else r.removeAttribute('data-accent');
+  const tb=$('#themeBtn'); if(tb){ tb.innerHTML=(PREFS.theme==='dark')?ICON_SUN:ICON_MOON; tb.title=(PREFS.theme==='dark')?'切换浅色模式':'切换深色模式'; }
+}
+function savePrefs(){ try{ localStorage.setItem(PREFS_KEY, JSON.stringify(PREFS)); }catch(e){} }
+function toggleTheme(){ PREFS.theme=(PREFS.theme==='dark')?'light':'dark'; applyPrefs(); savePrefs(); }
+function pickAccent(){ showPop($('#accentBtn'),'强调色',[{n:'砖橙 · 默认',id:'iron',c:'#E4441D'},{n:'荧光黄绿 · 美叶同款',id:'lime',c:'#DFFF1F'}], id=>{ PREFS.accent=id; applyPrefs(); savePrefs(); }); }
+const host=u=>{ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return ''; } };
+let tT; function toast(m){ const t=$('#toast'); $('#toastMsg').textContent=m; t.classList.add('show'); clearTimeout(tT); tT=setTimeout(()=>t.classList.remove('show'),1800); }
+
+/* ---------- 页面内弹框（替代 prompt/confirm，兼容 iframe 预览） ---------- */
+function ask(title,val){ return new Promise(res=>{
+  const d=$('#dlg'), i=$('#dlgI'); $('#dlgT').textContent=title; $('#dlgM').textContent=''; i.classList.remove('hide'); i.value=val||''; $('#dlgK').textContent='确定';
+  d.classList.add('open'); setTimeout(()=>{ i.focus(); i.select(); },50);
+  const done=v=>{ d.classList.remove('open'); $('#dlgK').onclick=null; $('#dlgC').onclick=null; i.onkeydown=null; res(v); };
+  $('#dlgK').onclick=()=>done(i.value.trim()||null); $('#dlgC').onclick=()=>done(null);
+  i.onkeydown=e=>{ if(e.key==='Enter') done(i.value.trim()||null); else if(e.key==='Escape') done(null); };
+}); }
+function askConfirm(title,msg,okLabel){ return new Promise(res=>{
+  const d=$('#dlg'); $('#dlgT').textContent=title; $('#dlgM').textContent=msg||''; $('#dlgI').classList.add('hide'); $('#dlgK').textContent=okLabel||'确定';
+  d.classList.add('open');
+  const done=v=>{ d.classList.remove('open'); $('#dlgK').onclick=null; $('#dlgC').onclick=null; res(v); };
+  $('#dlgK').onclick=()=>done(true); $('#dlgC').onclick=()=>done(false);
+}); }
+
+/* ---------- 状态 ---------- */
+let MAT=[];                 // 我的素材
+let UCATS=[];               // 分类
+let UALB=[];                // 专辑
+let VIEW={kind:'all', id:''};
+let Q='', TAGSEL=new Set(), COLORSEL=null, SORT='new', VMODE='grid', DENSITY=1, SELMODE=false, SEL=new Set();
+let FSEL={medium:'',scene:'',style:'',industry:''};
+let DOPEN={medium:true,scene:true,style:false,industry:false};
+let DLS={list:[],i:-1};
+
+const CW={0:'148px',1:'196px',2:'268px'};
+const COLORS=[
+  {k:'red',n:'红',h:[345,360,0,15],c:'#E5431F'},
+  {k:'orange',n:'橙',h:[15,45],c:'#E8881F'},
+  {k:'yellow',n:'黄',h:[45,70],c:'#D9B311'},
+  {k:'green',n:'绿',h:[70,160],c:'#3E9E5A'},
+  {k:'teal',n:'青',h:[160,200],c:'#17A2A2'},
+  {k:'blue',n:'蓝',h:[200,250],c:'#2563C9'},
+  {k:'purple',n:'紫',h:[250,290],c:'#7C3AC9'},
+  {k:'pink',n:'粉',h:[290,345],c:'#D9488A'},
+  {k:'mono',n:'黑白灰',h:null,c:'#8A8378'}
+];
+
+/* ---------- 维度（媒介 / 场景 / 风格 / 行业） ---------- */
+const DIMS=[
+  { k:'medium',   n:'媒介', vals:['平面','3D','空间','动态','手绘'] },
+  { k:'scene',    n:'场景', vals:['品牌','包装','电商','海报','门店','展陈','办公','节日','线上','线下'] },
+  { k:'style',    n:'风格', vals:['极简','极繁','复古','未来','手作','国潮','编辑','潮玩','高饱和','中性'] },
+  { k:'industry', n:'行业', vals:['餐饮','零售','美妆','科技','文化','教育','地产','医疗','服饰','金融'] },
+];
+const dimName=k=>(DIMS.find(d=>d.k===k)||{}).n||k;
+const ALB_PALETTE=['#E5431F','#B4761A','#1E3A8A','#7A2E4E','#0F766E','#6E6A32','#C2410C','#4338CA','#8A5A2B','#BE123C','#A21CAF','#0369A1','#6D28D9','#DB2777','#15803D','#0891B2'];
+
+/* ---------- 主色提取 ---------- */
+function dominantColor(canvas){
+  const w=Math.min(canvas.width,90), h=Math.min(canvas.height,90);
+  const c=document.createElement('canvas'); c.width=w;c.height=h;
+  const x=c.getContext('2d'); x.drawImage(canvas,0,0,w,h);
+  let d; try{ d=x.getImageData(0,0,w,h).data; }catch(e){ return {hue:null,sat:0,hex:'#8A8378'}; }
+  const buckets={};
+  for(let i=0;i<d.length;i+=4){
+    const r=d[i],g=d[i+1],b=d[i+2],a=d[i+3]; if(a<125) continue;
+    const mx=Math.max(r,g,b), mn=Math.min(r,g,b); const l=(mx+mn)/2/255;
+    if(l>0.94||l<0.06) continue;               // 跳过过亮/过暗
+    const s=mx===0?0:(mx-mn)/mx;
+    if(s<0.14){ buckets['mono']=(buckets['mono']||0)+1; continue; }
+    let hh; const df=mx-mn;
+    if(mx===r) hh=((g-b)/df)%6; else if(mx===g) hh=(b-r)/df+2; else hh=(r-g)/df+4;
+    hh=(hh*60+360)%360;
+    const k=Math.round(hh/15)*15;
+    buckets[k]=(buckets[k]||0)+1;
+  }
+  let best='mono',bn=-1; for(const k in buckets){ if(buckets[k]>bn){bn=buckets[k];best=k;} }
+  if(best==='mono') return {hue:null,sat:0,hex:'#8A8378'};
+  const hue=+best; return {hue, sat:1, hex:hsl(hue,58,48)};
+}
+function hsl(h,s,l){ const a=s*Math.min(l,1-l); const f=n=>{const k=(n+h/30)%12; return l-a*Math.max(-1,Math.min(k-3,9-k,1));}; return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join(''); }
+function colorKeyOf(hue){ if(hue==null) return 'mono'; for(const c of COLORS){ if(!c.h) continue; const h=c.h; for(let i=0;i<h.length;i+=2){ let lo=h[i],hi=h[i+1]; if(lo<=hi){ if(hue>=lo&&hue<hi) return c.k; } else { if(hue>=lo||hue<hi) return c.k; } } } return 'mono'; }
+
+/* ---------- 分类 ---------- */
+const catById=id=>UCATS.find(c=>c.id===id);
+const catName=id=>{ const c=catById(id); return c?c.name:'未分类'; };
+const catColor=id=>{ const c=catById(id); return c?c.color:'#8A8378'; };
+function seedCats(){
+  return CATS.filter(c=>c.key!=='all').map(c=>({id:'c_'+c.key, name:c.label, color:c.color, hue:c.key, builtin:true}));
+}
+async function newCat(){
+  const name=(await ask('新建分类（例如：餐饮门头 / 潮玩 IP / 红色系）','')||'').trim(); if(!name) return;
+  if(UCATS.some(c=>c.name===name)){ toast('已存在同名分类'); return; }
+  const palette=['#E5431F','#B4761A','#1E3A8A','#7A2E4E','#0F766E','#6E6A32','#C2410C','#4338CA','#8A5A2B','#BE123C','#A21CAF','#0369A1','#6D28D9','#DB2777','#15803D','#0891B2'];
+  const c={id:uid(), name, color:palette[UCATS.length%palette.length]};
+  UCATS.push(c); await sPut('cats',c); renderSide(); renderCatSelect(); toast('已新建分类「'+name+'」');
+}
+async function renameCat(id){ const c=catById(id); if(!c) return; const n=await ask('重命名分类',c.name); if(!n) return; c.name=n; await sPut('cats',c); renderSide(); renderCatSelect(); renderMain(); }
+async function delCat(id){ const c=catById(id); if(!c) return; if(!await askConfirm('删除分类「'+c.name+'」','该分类下的素材会变成「未分类」，不会被删除。','删除')) return;
+  UCATS=UCATS.filter(x=>x.id!==id); await sDel('cats',id);
+  for(const m of MAT.filter(x=>x.cat===id)){ m.cat=''; await sPut('refs',m); }
+  if(VIEW.kind==='cat'&&VIEW.id===id) VIEW={kind:'all'}; renderSide(); renderCatSelect(); renderMain(); toast('已删除分类'); }
+
+/* ---------- 专辑 ---------- */
+const albById=id=>UALB.find(a=>a.id===id);
+const albName=id=>{ const a=albById(id); return a?a.name:''; };
+async function newAlb(name){
+  let nm=(name==null?await ask('新建专辑（例如：餐饮门头 / 红色系 / 潮玩 IP）',''):name);
+  nm=(nm||'').trim(); if(!nm) return null;
+  const dup=UALB.find(a=>a.name===nm); if(dup){ toast('已存在同名专辑'); return dup.id; }
+  const a={ id:uid(), name:nm, color:ALB_PALETTE[UALB.length%ALB_PALETTE.length] };
+  UALB.push(a); await sPut('albums',a); renderSide(); renderMain(); toast('已新建专辑「'+nm+'」'); return a.id;
+}
+async function renameAlb(id){ const a=albById(id); if(!a) return; const n=await ask('重命名专辑',a.name); if(!n) return; a.name=n; await sPut('albums',a); renderSide(); renderMain(); toast('已重命名'); }
+async function delAlb(id){
+  const a=albById(id); if(!a) return;
+  if(!await askConfirm('删除专辑「'+a.name+'」','素材本身不会被删除，只是移出这个专辑。','删除')) return;
+  UALB=UALB.filter(x=>x.id!==id); await sDel('albums',id);
+  for(const m of MAT.filter(x=>(x.albums||[]).includes(id))){ m.albums=(m.albums||[]).filter(x=>x!==id); await sPut('refs',m); }
+  if(VIEW.kind==='album'&&VIEW.id===id){ VIEW={kind:'albums',id:''}; }
+  renderSide(); renderMain(); toast('已删除专辑');
+}
+function albumCard(a){
+  const ms=MAT.filter(m=>(m.albums||[]).includes(a.id));
+  let cells=''; for(let i=0;i<4;i++){ cells += i<ms.length ? '<img src="'+refUrl(ms[i])+'" alt="" loading="lazy">' : '<span class="ph">'+(ms.length===0&&i===0?'空专辑':'')+'</span>'; }
+  return '<article class="albcard" data-view="album" data-id="'+a.id+'"><div class="th">'+cells+'</div>'
+   +'<div class="bd"><span class="sw" style="background:'+a.color+'"></span><b>'+esc(a.name)+'</b><span>'+ms.length+'</span></div></article>';
+}
+function addSelToAlbum(){
+  const items=UALB.map(a=>({n:a.name,id:a.id,c:a.color})).concat([{n:'＋ 新建专辑',id:'__new'}]);
+  showPop($('#selAlb'),'加入专辑',items,async id=>{
+    if(id==='__new'){ id=await newAlb(); if(!id) return; }
+    for(const m of MAT.filter(x=>SEL.has(x.id))){ m.albums=[...new Set([...(m.albums||[]),id])]; await sPut('refs',m); }
+    toast('已加入专辑「'+albName(id)+'」'); SEL.clear(); renderSide(); renderMain();
+  });
+}
+
+/* ---------- 图片处理 ---------- */
+function bitmap(blob){
+  if(window.createImageBitmap) return createImageBitmap(blob).catch(()=>viaURL(blob));
+  return viaURL(blob);
+}
+function viaURL(blob){ return new Promise((res,rej)=>{ const u=URL.createObjectURL(blob); const im=new Image(); im.onload=()=>{res(im);URL.revokeObjectURL(u);}; im.onerror=rej; im.src=u; }); }
+function scale(src,mw,mh){ const r=Math.min(1,mw/src.width,mh/src.height); const w=Math.max(1,Math.round(src.width*r)),h=Math.max(1,Math.round(src.height*r)); const c=document.createElement('canvas'); c.width=w;c.height=h; c.getContext('2d').drawImage(src,0,0,w,h); return c; }
+const cBlob=(c,ty,q)=>new Promise(res=>c.toBlob(b=>res(b),ty,q));
+async function makeRef(blob,meta){
+  const bmp=await bitmap(blob); const w=bmp.width||1,h=bmp.height||1;
+  const col=dominantColor(bmp);
+  const full=await cBlob(scale(bmp,1800,1800),'image/jpeg',0.9);
+  const thumb=scale(bmp,560,560).toDataURL('image/jpeg',0.82);
+  return { id:uid(), title:meta.title||'', note:meta.note||'', tags:meta.tags||[], src:meta.src||'', url:meta.url||'', author:meta.author||'',
+    albums:[], f:{}, cat:meta.cat||'', hue:col.hue, sat:col.sat, hex:col.hex, thumb, blob:full||blob, w, h, createdAt:Date.now() };
+}
+function refUrl(m){ if(m.blob){ if(!m._url) m._url=URL.createObjectURL(m.blob); return m._url; } return m.imgUrl||m.thumb||''; }
+function itemSrc(m){ return (m&&m._lib!=null)?libImg(ITEMS[m._lib],m._lib):refUrl(m); }
+
+/* ---------- 侧栏 ---------- */
+function renderSide(){
+  const uncat=MAT.filter(m=>!m.cat).length;
+  $('#navLib').innerHTML=
+    navBtn('all','全部素材',MAT.length,iconGrid(),VIEW.kind==='all'&&VIEW.id==='')+
+    navBtn('uncat','未分类',uncat,iconInbox(),VIEW.kind==='uncat');
+  $('#navCats').innerHTML=UCATS.map(c=>{
+    const n=MAT.filter(m=>m.cat===c.id).length;
+    return '<div class="navb'+(VIEW.kind==='cat'&&VIEW.id===c.id?' on':'')+'" data-view="cat" data-id="'+c.id+'">'
+      +'<span class="dot" style="background:'+c.color+'"></span><span class="tx">'+esc(c.name)+'</span><span class="cnt">'+n+'</span>'
+      +'<span class="catx"><button data-rn="'+c.id+'" title="重命名"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></button>'
+      +'<button data-dc="'+c.id+'" title="删除"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button></span></div>';
+  }).join('')||'<div style="padding:8px 10px;font-size:12px;color:var(--muted);font-weight:300">还没有分类，点上方「＋」新建</div>';
+  $('#navAlbs').innerHTML=
+    navBtn('albums','专辑总览',UALB.length,iconAlbum(),VIEW.kind==='albums')+
+    (UALB.map(a=>{
+      const n=MAT.filter(m=>(m.albums||[]).includes(a.id)).length;
+      return '<div class="navb'+(VIEW.kind==='album'&&VIEW.id===a.id?' on':'')+'" data-view="album" data-id="'+a.id+'">'
+        +'<span class="dot" style="background:'+a.color+'"></span><span class="tx">'+esc(a.name)+'</span><span class="cnt">'+n+'</span>'
+        +'<span class="catx"><button data-arn="'+a.id+'" title="重命名"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg></button>'
+        +'<button data-adc="'+a.id+'" title="删除"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button></span></div>';
+    }).join('')||'<div style="padding:8px 10px;font-size:12px;color:var(--muted);font-weight:300">还没有专辑，点「＋」新建</div>');
+  $('#navDims').innerHTML=DIMS.map(d=>{
+    const vals=d.vals.map(v=>{
+      const n=MAT.filter(m=>(m.f||{})[d.k]===v).length;
+      return '<button class="fvb'+(FSEL[d.k]===v?' on':'')+'" data-dk="'+d.k+'" data-dv="'+esc(v)+'">'+esc(v)+'<span class="cnt">'+n+'</span></button>';
+    }).join('');
+    return '<div class="dgrp'+(DOPEN[d.k]?'':' fold')+'">'
+      +'<button class="dgh" data-dgk="'+d.k+'"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>'+d.n+(FSEL[d.k]?'<em>'+esc(FSEL[d.k])+'</em>':'')+'</button>'
+      +'<div class="dv">'+vals+'</div></div>';
+  }).join('');
+  $('#navRef').innerHTML=
+    navBtn('lib','灵感库',ITEMS.length,iconStar(),VIEW.kind==='lib')+
+    navBtn('trends','2026 趋势',TRENDS.length,iconTrend(),VIEW.kind==='trends')+
+    navBtn('sources','素材源',srcCount(),iconGlobe(),VIEW.kind==='sources');
+  $('#foot').innerHTML='存储：'+(MODE==='idb'?'IndexedDB 本地数据库':'localStorage 本地存储')+'<br>不上传 · 不联网 · 仅本机';
+}
+function navBtn(kind,label,n,ic,on){ return '<button class="navb'+(on?' on':'')+'" data-view="'+kind+'">'+ic+'<span class="tx">'+esc(label)+'</span><span class="cnt">'+n+'</span></button>'; }
+const iconGrid=()=>'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>';
+const iconInbox=()=>'<svg class="ic" viewBox="0 0 24 24"><path d="M3 12h5l2 3h4l2-3h5"/><path d="M5 5h14l2 7v7H3v-7z"/></svg>';
+const iconStar=()=>'<svg class="ic" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6L3.4 9.8l6-.7z"/></svg>';
+const iconTrend=()=>'<svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>';
+const iconGlobe=()=>'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>';
+const iconAlbum=()=>'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="9.5" r="1.4"/></svg>';
+const srcCount=()=>SOURCES.reduce((a,g)=>a+g.list.length,0);
+
+/* ---------- 主区 ---------- */
+function curTitle(){ return VIEW.kind==='all'?'全部素材':VIEW.kind==='uncat'?'未分类':VIEW.kind==='cat'?catName(VIEW.id):VIEW.kind==='album'?albName(VIEW.id):VIEW.kind==='albums'?'专辑总览':VIEW.kind==='lib'?'灵感库':VIEW.kind==='trends'?'2026 趋势':'素材源'; }
+function renderMain(){
+  renderBar(); renderContent(); renderSelbar();
+}
+function renderBar(){
+  $('#vTitle').textContent=curTitle();
+  $('#r2').innerHTML='';
+  if(VIEW.kind==='all'||VIEW.kind==='uncat'||VIEW.kind==='cat'||VIEW.kind==='album'){
+    const list=matList();
+    $('#vCount').textContent=list.length+' 张';
+    const tags=allTags();
+    let h='';
+    const fchips=DIMS.filter(d=>FSEL[d.k]).map(d=>'<button class="chip on" data-fclr="'+d.k+'">'+d.n+' · '+esc(FSEL[d.k])+' ×</button>').join('');
+    if(COLORSEL||TAGSEL.size||fchips){
+      h+=fchips+'<button class="chip on" id="clearF">清除筛选 ×</button>';
+    }
+    COLORS.forEach(c=>{ h+='<button class="swatch'+(COLORSEL===c.k?' on':'')+'" data-color="'+c.k+'" title="'+c.n+'" style="background:'+c.c+'"></button>'; });
+    if(tags.length) h+='<span style="width:6px"></span>' + tags.slice(0,14).map(t=>'<button class="chip'+(TAGSEL.has(t)?' on':'')+'" data-tag="'+esc(t)+'">#'+esc(t)+'</button>').join('');
+    $('#r2').innerHTML=h;
+    $('#selToggle').classList.remove('hide');
+  } else {
+    $('#vCount').textContent=VIEW.kind==='albums'?(UALB.length+' 个专辑'):VIEW.kind==='lib'?(ITEMS.length+' 个案例'):VIEW.kind==='trends'?(TRENDS.length+' 条'):srcCount()+' 个站点';
+    if(VIEW.kind==='lib'){
+      $('#r2').innerHTML=CATS.map(c=>'<button class="chip'+(FILTERCAT===c.key?' on':'')+'" data-fc="'+c.key+'">'+(c.key!=='all'?'<span class="dot" style="display:inline-block;width:7px;height:7px;border-radius:99px;margin-right:6px;vertical-align:middle;background:'+c.color+'"></span>':'')+esc(c.label)+'</button>').join('');
+    }
+    $('#selToggle').classList.add('hide');
+  }
+}
+let FILTERCAT='all';
+function allTags(){ const s=new Set(); MAT.forEach(m=>(m.tags||[]).forEach(t=>s.add(t))); return [...s].sort(); }
+function matList(){
+  let a=MAT.slice();
+  if(VIEW.kind==='uncat') a=a.filter(m=>!m.cat);
+  else if(VIEW.kind==='cat') a=a.filter(m=>m.cat===VIEW.id);
+  else if(VIEW.kind==='album') a=a.filter(m=>(m.albums||[]).includes(VIEW.id));
+  DIMS.forEach(d=>{ const v=FSEL[d.k]; if(v) a=a.filter(m=>(m.f||{})[d.k]===v); });
+  if(COLORSEL) a=a.filter(m=>colorKeyOf(m.hue)===COLORSEL);
+  if(TAGSEL.size) a=a.filter(m=>(m.tags||[]).some(t=>TAGSEL.has(t)));
+  if(Q){ const q=Q.toLowerCase(); a=a.filter(m=>((m.title||'')+' '+(m.note||'')+' '+(m.tags||[]).join(' ')+' '+(m.src||'')).toLowerCase().includes(q)); }
+  a.sort(SORT==='old'?(x,y)=>x.createdAt-y.createdAt : SORT==='name'?(x,y)=>(x.title||'~').localeCompare(y.title||'~','zh') : (x,y)=>y.createdAt-x.createdAt);
+  return a;
+}
+function renderContent(){
+  const c=$('#content');
+  if(VIEW.kind==='trends'){ c.innerHTML='<div class="tgrid" style="padding-top:4px">'+TRENDS.map((t,i)=>'<div class="tr"><div class="no">'+esc(t.n||String(i+1).padStart(2,'0'))+' · 2026</div><h4>'+esc(t.cn)+'</h4>'+(t.en?'<em>'+esc(t.en)+'</em>':'')+'<p>'+esc(t.d)+'</p></div>').join('')+'</div>'; return; }
+  if(VIEW.kind==='sources'){ c.innerHTML='<div class="sgrid" style="padding-top:4px">'+SOURCES.map(g=>'<div class="sg"><h4>'+esc(g.g)+'</h4><div class="sl">'+g.list.map(s=>'<a href="'+esc(s.u)+'" target="_blank" rel="noopener"><b>'+esc(s.n)+'</b><span>'+esc(s.d)+'</span></a>').join('')+'</div></div>').join('')+'</div>'; return; }
+  if(VIEW.kind==='lib'){
+    let a=ITEMS.map((it,i)=>({it,i}));
+    if(FILTERCAT!=='all') a=a.filter(x=>x.it.cat===FILTERCAT);
+    if(Q){ const q=Q.toLowerCase(); a=a.filter(x=>(x.it.t+' '+x.it.d+' '+x.it.use+' '+(x.it.tags||[]).join(' ')+' '+x.it.src).toLowerCase().includes(q)); }
+    if(!a.length){ c.innerHTML=emptyLib('没有匹配的案例'); return; }
+    c.innerHTML='<div class="libgrid" style="padding-top:4px">'+a.map(x=>cardLib(x.it,x.i)).join('')+'</div>'; return;
+  }
+  if(VIEW.kind==='albums'){
+    if(!UALB.length){ c.innerHTML='<div class="empty"><h3>还没有专辑</h3><p>专辑能把同一张图放进多个参考语境——比如「餐饮门头」「红色系」「潮玩 IP」。点左侧「专辑」旁的 ＋ 新建，再到素材详情里勾选归属。</p></div>'; return; }
+    c.innerHTML='<div class="albgrid" style="padding-top:4px">'+UALB.map(albumCard).join('')+'</div>'; return;
+  }
+  const list=matList();
+  if(!MAT.length){ c.innerHTML=emptyMain(); bindEmpty(); return; }
+  if(!list.length){ c.innerHTML=emptyLib('这个范围里还没有素材'); return; }
+  c.innerHTML='<div class="'+(VMODE==='wf'?'wf':'grid')+'" id="grid"></div><div class="more" id="moreWrap"></div>';
+  paint(list);
+}
+function paint(list){
+  const wrap=$('#grid'), moreWrap=$('#moreWrap'); const step=72; let i=0; const isWF=VMODE==='wf';
+  function add(){
+    const end=Math.min(i+step,list.length); let html=''; for(;i<end;i++) html+=cardMat(list[i],isWF); wrap.insertAdjacentHTML('beforeend',html);
+    if(i<list.length){ moreWrap.innerHTML='<button id="moreBtn">加载更多（还有 '+(list.length-i)+' 张）</button>'; $('#moreBtn').onclick=add; }
+    else moreWrap.innerHTML='';
+  }
+  add();
+}
+function cardMat(m,isWF){
+  const im=refUrl(m); const pick=SEL.has(m.id);
+  const cap=(m.title||'')|| (m.src||'本地采集');
+  const albs=(m.albums||[]).map(albName).filter(Boolean);
+  const metas=[m.src||'', ...albs].filter(Boolean);
+  const supx=metas.length?'<span>'+esc(metas.join(' · '))+'</span>':'';
+  const ftags=(isWF&&(m.tags||[]).length)?'<span>#'+m.tags.map(esc).join(' #')+'</span>':'';
+  return '<article class="cell'+(pick?' picked':'')+'" data-id="'+m.id+'">'
+   +(m.cat?'<span class="cattag" style="background:'+catColor(m.cat)+'cc">'+esc(catName(m.cat))+'</span>':'')
+   +'<span class="chk"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>'
+   +'<button class="addalb" data-addalb="'+m.id+'" title="加入专辑"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/></svg></button>'
+   +'<img src="'+im+'" alt="'+esc(cap)+'" loading="lazy">'
+   +'<span class="cap"><b>'+esc(cap)+'</b>'+supx+ftags+'</span></article>';
+}
+function cardLib(it,i){
+  const got=isGot(it.t);
+  return '<article class="lcard"><span class="ph" data-pl="'+i+'"><img src="'+libImg(it,i)+'" alt="'+esc(it.t)+'" loading="lazy" data-fb="'+coverSVG(it,i)+'" onerror="this.onerror=null;this.src=this.dataset.fb">'
+   +'<button class="col'+(got?' got':'')+'" data-cl="'+i+'"><svg viewBox="0 0 24 24">'+(got?'<path d="M20 6 9 17l-5-5"/>':'<path d="M12 5v14M5 12h14"/>')+'</svg>'+(got?'已采集':'采集')+'</button></span>'
+   +'<div class="bd"><h3>'+esc(it.t)+'</h3><p>'+esc(it.d)+'</p><div class="use"><b>看点 · </b>'+esc(it.use)+'</div>'
+   +'<div class="ft"><a href="'+esc(it.url)+'" target="_blank" rel="noopener">↗ '+esc(it.src)+'</a></div></div></article>';
+}
+function emptyMain(){
+  return '<div class="empty"><h3>还没有素材 —— 现在就能开始收</h3><p>在别的网站复制图片、截图，回到这里按 Ctrl+V；也可以拖图片、传文件、或存一个网址。采集后可以分到不同分类，以后按分类、标签、颜色快速翻出来。</p>'
+   +'<div class="zone" id="zoneHome"><b>拖图片到这里，或点我选图片</b><small>支持 Ctrl+V 粘贴 · 手机可长按保存截图后上传</small></div>'
+   +'<div class="zb"><button class="tgl" id="zImp">打开采集面板</button><button class="tgl" id="zLib">去灵感库挑</button></div></div>';
+}
+function bindEmpty(){ const z=$('#zoneHome'); if(z) z.onclick=openImp; const a=$('#zImp'); if(a) a.onclick=openImp; const b=$('#zLib'); if(b) b.onclick=()=>setView('lib'); }
+function emptyLib(t){ return '<div class="empty"><h3>'+esc(t)+'</h3><p>换个关键词，或清除筛选条件试试。</p></div>'; }
+function renderSelbar(){ $('#selbar').classList.toggle('show',SELMODE&&SEL.size>0); $('#selN').textContent='已选 '+SEL.size; }
+
+/* ---------- 灵感库兜底封面 ---------- */
+function coverSVG(it,i){
+  const c=(CATS.find(x=>x.key===it.cat)||{}).color||'#E4441D';
+  const lb=(CATS.find(x=>x.key===it.cat)||{}).label||'灵感';
+  const w=800,h=it.wide?560:1000;
+  const svg="<svg xmlns='http://www.w3.org/2000/svg' width='"+w+"' height='"+h+"'><defs><pattern id='g"+i+"' width='40' height='40' patternUnits='userSpaceOnUse'><path d='M40 0H0V40' fill='none' stroke='"+c+"' stroke-opacity='.15'/></pattern></defs>"
+   +"<rect width='"+w+"' height='"+h+"' fill='#FBF7EF'/><rect width='"+w+"' height='"+h+"' fill='url(#g"+i+")'/><rect width='"+w+"' height='12' fill='"+c+"'/>"
+   +"<text x='46' y='"+h*0.56+"' font-family='Noto Sans SC,sans-serif' font-size='190' font-weight='900' fill='"+c+"' fill-opacity='.92'>"+lb+"</text>"
+   +"<text x='48' y='"+(h*0.56+120)+"' font-family='Noto Sans SC,sans-serif' font-size='28' fill='#1A1712' fill-opacity='.5'>磊集 · 灵感参考</text></svg>";
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+const libImg=(it,i)=>it.img||coverSVG(it,i);
+const isGot=t=>MAT.some(m=>m.kind==='lib'&&m.title===t);
+
+/* ---------- 采集入库 ---------- */
+async function collect(it,i){
+  if(isGot(it.t)) return;
+  const c=UCATS.find(x=>x.hue===it.cat||x.name===catLabel(it.cat));
+  const r={ id:uid(), kind:'lib', title:it.t, note:it.use||'', tags:it.tags||[], src:it.src, url:it.url, author:'', albums:(VIEW.kind==='album'&&VIEW.id)?[VIEW.id]:[], f:{}, cat:c?c.id:'',
+    hue:null, sat:0, hex:'#8A8378', thumb:libImg(it,i), blob:null, imgUrl:'', w:0, h:0, createdAt:Date.now() };
+  MAT.push(r); await sPut('refs',r); renderSide(); renderMain(); toast('已收进「'+(c?c.name:'未分类')+'」');
+}
+async function uncollect(t){ const r=MAT.find(m=>m.kind==='lib'&&m.title===t); if(!r) return; if(r._url)URL.revokeObjectURL(r._url); MAT=MAT.filter(m=>m.id!==r.id); await sDel('refs',r.id); renderSide(); renderMain(); toast('已取消采集'); }
+const catLabel=key=>(CATS.find(c=>c.key===key)||{}).label||'';
+
+let PEND=0;
+async function addBlob(blob,meta){
+  PEND++;
+  try{ const r=await makeRef(blob,meta); if(VIEW.kind==='cat'&&VIEW.id) r.cat=VIEW.id; else if(meta.cat) r.cat=meta.cat;
+    if(VIEW.kind==='album'&&VIEW.id) r.albums=[VIEW.id];
+    MAT.push(r); await sPut('refs',r); renderSide(); renderMain(); addMini(r); }
+  catch(e){ console.warn('采集失败',e); }
+  PEND--; if(PEND===0) toast('已采集，自动按主色归类');
+}
+function addMini(r){ const l=$('#impList'); if(!l) return; const d=document.createElement('div'); d.className='it'; d.innerHTML='<img src="'+r.thumb+'"><span class="n">新增</span>'; l.appendChild(d); }
+async function addUrl(u){ u=(u||'').trim(); if(!u) return; if(!/^https?:/i.test(u)) u='https://'+u;
+  const r={ id:uid(), title:host(u)||u, note:'', tags:[], src:host(u), url:u, author:'', albums:(VIEW.kind==='album'&&VIEW.id)?[VIEW.id]:[], f:{}, cat:(VIEW.kind==='cat'?VIEW.id:''), hue:null, sat:0, hex:'#8A8378', thumb:u, imgUrl:u, blob:null, w:0, h:0, createdAt:Date.now() };
+  MAT.push(r); await sPut('refs',r); renderSide(); renderMain(); toast('已存入网址参考'); }
+function handleFiles(fs){ [...fs].filter(f=>f.type.startsWith('image/')).forEach(f=>addBlob(f,{})); }
+function handlePaste(e){ let n=0; for(const x of ((e.clipboardData||{}).items||[])){ if(x.type&&x.type.startsWith('image/')){ const b=x.getAsFile(); if(b){ addBlob(b,{}); n++; } } } if(n){ e.preventDefault(); toast('正在采集 '+n+' 张…'); } }
+
+/* ---------- 抽屉 ---------- */
+function openDrawer(list,i){ DLS={list,i}; $('#drawer').classList.add('open'); $('#scrim').classList.add('show'); paintDrawer(); }
+function closeDrawer(){ $('#drawer').classList.remove('open'); $('#scrim').classList.remove('show'); }
+function paintDrawer(){
+  const m=DLS.list[DLS.i]; if(!m) return;
+  $('#dIdx').textContent=(DLS.i+1)+' / '+DLS.list.length;
+  $('#dImg').src=refUrl(m);
+  $('#dTitle').value=m.title||''; $('#dNote').value=m.note||'';
+  renderCatSelect(); $('#dCat').value=m.cat||'';
+  renderTagbox(m); renderAlbBox(m); renderFacets(m);
+  $('#dSrcName').value=m.src||''; $('#dAuthor').value=m.author||'';
+  $('#dSrc').innerHTML=m.url?'<a href="'+esc(m.url)+'" target="_blank" rel="noopener" style="color:var(--accent-ink)">↗ '+esc(m.src||host(m.url))+'</a>':'<span style="color:var(--muted)">本地采集</span>';
+  $('#dMeta').innerHTML='<span>'+m.w+'×'+m.h+'</span><span>'+new Date(m.createdAt).toLocaleDateString('zh-CN')+'</span>'+(m.hex?'<span><i class="swatchdot" style="background:'+m.hex+'"></i>主色 '+m.hex+'</span>':'');
+}
+function renderTagbox(m){ const b=$('#dTagBox'); b.innerHTML=(m.tags||[]).map(t=>'<i>#'+esc(t)+'<button data-rt="'+esc(t)+'">×</button></i>').join('')||'<span style="font-size:12px;color:var(--muted);font-weight:300">还没有标签</span>'; }
+function renderAlbBox(m){
+  const mine=m.albums||[];
+  $('#dAlbBox').innerHTML=(UALB.length?'':'<span class="hint">还没有专辑，点右边新建一个。</span>')
+    +UALB.map(a=>'<button class="'+(mine.includes(a.id)?'on':'')+'" data-alb="'+a.id+'"><span class="sw" style="background:'+a.color+'"></span>'+esc(a.name)+'</button>').join('')
+    +'<button data-alb="__new">＋ 新建专辑</button>';
+}
+function renderFacets(m){
+  const f=m.f||{};
+  $('#dFacets').innerHTML=DIMS.map(d=>'<select data-fk="'+d.k+'"><option value="">'+d.n+'：不限</option>'
+    +d.vals.map(v=>'<option value="'+esc(v)+'"'+(f[d.k]===v?' selected':'')+'>'+esc(v)+'</option>').join('')+'</select>').join('');
+}
+function renderCatSelect(){ const s=$('#dCat'); s.innerHTML='<option value="">未分类</option>'+UCATS.map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join(''); }
+function dMove(d){ if(!DLS.list.length) return; DLS.i=(DLS.i+d+DLS.list.length)%DLS.list.length; paintDrawer(); }
+async function dSave(){ const m=DLS.list[DLS.i]; if(!m) return; m.title=$('#dTitle').value.trim(); m.note=$('#dNote').value.trim(); m.cat=$('#dCat').value; m.src=$('#dSrcName').value.trim(); m.author=$('#dAuthor').value.trim(); await sPut('refs',m); renderSide(); renderMain(); paintDrawer(); toast('已保存'); }
+function dDownload(){ const m=DLS.list[DLS.i]; const a=document.createElement('a'); a.href=refUrl(m); a.download=(m.title||'leiji')+'.jpg'; document.body.appendChild(a); a.click(); a.remove(); }
+async function dDelete(){ const m=DLS.list[DLS.i]; if(!m) return; if(!await askConfirm('删除素材','确定删除「'+(m.title||'未命名')+'」？不可恢复。','删除')) return; if(m._url)URL.revokeObjectURL(m._url); MAT=MAT.filter(x=>x.id!==m.id); await sDel('refs',m.id); DLS.list=DLS.list.filter(x=>x.id!==m.id); renderSide(); renderMain(); if(DLS.list.length){ DLS.i=Math.min(DLS.i,DLS.list.length-1); paintDrawer(); } else closeDrawer(); toast('已删除'); }
+
+/* ---------- 灯箱 ---------- */
+function openLB(list,i){ DLS.list=list; DLS.i=i; $('#lb').classList.add('open'); paintLB(); }
+function paintLB(){ const m=DLS.list[DLS.i]; if(!m) return; $('#lbImg').src=itemSrc(m); $('#lbIdx').textContent=(DLS.i+1)+' / '+DLS.list.length; }
+function closeLB(){ $('#lb').classList.remove('open'); }
+function lbMove(d){ if(!DLS.list.length) return; DLS.i=(DLS.i+d+DLS.list.length)%DLS.list.length; paintLB(); }
+
+/* ---------- 批量 ---------- */
+function moveSelected(){
+  const btn=$('#selMove'); showPop(btn,'移动到分类', [{n:'未分类',id:''}].concat(UCATS.map(c=>({n:c.name,id:c.id,c:c.color}))),async id=>{ for(const m of MAT.filter(x=>SEL.has(x.id))){ m.cat=id; await sPut('refs',m); } toast('已移动 '+SEL.size+' 张'); SEL.clear(); renderSide(); renderMain(); });
+}
+async function tagSelected(){ const t=await ask('给选中的 '+SEL.size+' 张加标签（逗号分隔）',''); if(!t) return; const add=t.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  for(const m of MAT.filter(x=>SEL.has(x.id))){ m.tags=[...new Set([...(m.tags||[]),...add])]; await sPut('refs',m); } toast('已加标签'); renderMain(); }
+async function delSelected(){ if(!await askConfirm('删除素材','将删除选中的 '+SEL.size+' 张素材，不可恢复。','删除')) return; for(const m of MAT.filter(x=>SEL.has(x.id))){ if(m._url)URL.revokeObjectURL(m._url); await sDel('refs',m.id); } MAT=MAT.filter(x=>!SEL.has(x.id)); SEL.clear(); renderSide(); renderMain(); toast('已删除'); }
+function showPop(anchor,title,items,cb){
+  const p=$('#pop');
+  p.innerHTML='<div style="padding:6px 10px;font-size:10.5px;font-family:JetBrains Mono,monospace;color:var(--muted);letter-spacing:.1em;text-transform:uppercase">'+esc(title)+'</div>'
+    +items.map(it=>'<button data-pid="'+esc(it.id)+'">'+(it.c?'<span class="dot" style="background:'+it.c+'"></span>':'')+esc(it.n)+'</button>').join('');
+  p.classList.add('show');
+  const r=anchor.getBoundingClientRect(), ph=p.offsetHeight, pw=p.offsetWidth;
+  let left=Math.min(Math.max(10,r.left), innerWidth-pw-10);
+  let top=r.top-ph-8; if(top<10) top=r.bottom+8;
+  p.style.left=left+'px'; p.style.top=top+'px';
+  p.onclick=e=>{ const b=e.target.closest('[data-pid]'); if(!b) return; p.classList.remove('show'); p.onclick=null; cb(b.dataset.pid); };
+  setTimeout(()=>document.addEventListener('click',hidePop,{once:true}),0);
+}
+function hidePop(){ $('#pop').classList.remove('show'); }
+function clearFilters(){ COLORSEL=null; TAGSEL.clear(); DIMS.forEach(d=>FSEL[d.k]=''); renderSide(); renderMain(); }
+function albumForOne(id){
+  const m=MAT.find(x=>x.id===id); if(!m) return;
+  const btn=$('#content').querySelector('.cell[data-id="'+id+'"] .addalb')||$('#selAlb');
+  const mine=m.albums||[];
+  const items=UALB.map(a=>({n:(mine.includes(a.id)?'✓ ':'')+a.name,id:a.id,c:a.color})).concat([{n:'＋ 新建专辑',id:'__new'}]);
+  showPop(btn,'加入专辑 · '+(m.title||'未命名'),items,async aid=>{
+    if(aid==='__new'){ aid=await newAlb(); if(!aid) return; }
+    m.albums=[...new Set([...(m.albums||[]),aid])]; await sPut('refs',m); renderSide(); renderMain(); toast('已加入「'+albName(aid)+'」');
+  });
+}
+
+/* ---------- 视图切换 ---------- */
+function setView(kind,id){ VIEW={kind,id:id||''}; SEL.clear(); SELMODE=false; Q=''; $('#q').value=''; DIMS.forEach(d=>FSEL[d.k]=''); if(kind!=='lib') FILTERCAT='all'; renderSide(); renderMain(); $('#main').scrollTop=0; $('#side').classList.remove('open'); }
+
+/* ---------- 事件 ---------- */
+function bind(){
+  document.addEventListener('paste',handlePaste);
+  window.addEventListener('dragover',e=>e.preventDefault());
+  window.addEventListener('drop',e=>{ e.preventDefault(); const f=e.dataTransfer&&e.dataTransfer.files; if(f&&f.length) handleFiles(f); });
+  const z=$('#impZone'); if(z){ z.onclick=pick;
+    z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('over');});
+    z.addEventListener('dragleave',()=>z.classList.remove('over'));
+    z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('over'); if(e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);}); }
+
+  $('#side').addEventListener('click',e=>{
+    const rn=e.target.closest('[data-rn]'); if(rn){ e.stopPropagation(); renameCat(rn.dataset.rn); return; }
+    const dc=e.target.closest('[data-dc]'); if(dc){ e.stopPropagation(); delCat(dc.dataset.dc); return; }
+    const arn=e.target.closest('[data-arn]'); if(arn){ e.stopPropagation(); renameAlb(arn.dataset.arn); return; }
+    const adc=e.target.closest('[data-adc]'); if(adc){ e.stopPropagation(); delAlb(adc.dataset.adc); return; }
+    const dg=e.target.closest('[data-dgk]'); if(dg){ const k=dg.dataset.dgk; DOPEN[k]=!DOPEN[k]; renderSide(); return; }
+    const fv=e.target.closest('[data-dk]'); if(fv){ const k=fv.dataset.dk,v=fv.dataset.dv; FSEL[k]=FSEL[k]===v?'':v; SEL.clear(); renderSide(); renderMain(); return; }
+    const b=e.target.closest('[data-view]'); if(!b) return; setView(b.dataset.view, b.dataset.id||'');
+  });
+  $('#newCat').onclick=newCat;
+  $('#newAlb').onclick=()=>newAlb();
+  $('#sideToggle').onclick=()=>$('#side').classList.toggle('open');
+
+  $('#q').addEventListener('input',e=>{ Q=e.target.value; if(Q&&['lib','trends','sources','albums'].includes(VIEW.kind)) return; renderMain(); });
+  $('#sort').addEventListener('change',e=>{ SORT=e.target.value; renderMain(); });
+  $('#dens').addEventListener('click',e=>{ const b=e.target.closest('[data-d]'); if(!b) return; DENSITY=+b.dataset.d; $$('#dens button').forEach(x=>x.classList.toggle('on',x===b)); document.documentElement.style.setProperty('--cw',CW[DENSITY]); });
+  $('#vmode').addEventListener('click',e=>{ const b=e.target.closest('[data-v]'); if(!b) return; VMODE=b.dataset.v; $$('#vmode button').forEach(x=>x.classList.toggle('on',x===b)); renderMain(); });
+  $('#selToggle').onclick=()=>{ SELMODE=!SELMODE; if(!SELMODE) SEL.clear(); $('#selToggle').classList.toggle('on',SELMODE); renderMain(); };
+  $('#selX').onclick=()=>{ SELMODE=false; SEL.clear(); $('#selToggle').classList.remove('on'); renderMain(); };
+  $('#selMove').onclick=()=>moveSelected();
+  $('#selAlb').onclick=()=>addSelToAlbum();
+  $('#selTag').onclick=()=>tagSelected();
+  $('#selDel').onclick=()=>delSelected();
+
+  $('#content').addEventListener('click',e=>{
+    const cl=e.target.closest('[data-cl]'); if(cl){ const i=+cl.dataset.cl, it=ITEMS[i]; isGot(it.t)?uncollect(it.t):collect(it,i); return; }
+    const pl=e.target.closest('[data-pl]'); if(pl){ const i=+pl.dataset.pl; openLB([Object.assign({},ITEMS[i],{_lib:i})],0); return; }
+    const ab=e.target.closest('[data-addalb]'); if(ab){ e.stopPropagation(); albumForOne(ab.dataset.addalb); return; }
+    const fc=e.target.closest('[data-fc]'); if(fc){ FILTERCAT=fc.dataset.fc; renderBar(); renderContent(); return; }
+    const av=e.target.closest('.albcard[data-view]'); if(av){ setView('album', av.dataset.id); return; }
+    const sw=e.target.closest('[data-color]'); if(sw){ COLORSEL=COLORSEL===sw.dataset.color?null:sw.dataset.color; renderMain(); return; }
+    const tg=e.target.closest('[data-tag]'); if(tg){ const t=tg.dataset.tag; TAGSEL.has(t)?TAGSEL.delete(t):TAGSEL.add(t); renderMain(); return; }
+    const cf=e.target.closest('#clearF'); if(cf){ clearFilters(); return; }
+    const cell=e.target.closest('.cell'); if(cell){ const id=cell.dataset.id; const m=MAT.find(x=>x.id===id); if(!m) return;
+      if(SELMODE){ SEL.has(id)?SEL.delete(id):SEL.add(id); cell.classList.toggle('picked'); renderSelbar(); return; }
+      const list=matList(); openDrawer(list, list.findIndex(x=>x.id===id)); return; }
+  });
+
+  $('#r2').addEventListener('click',e=>{
+    const fc=e.target.closest('[data-fc]'); if(fc){ FILTERCAT=fc.dataset.fc; renderBar(); renderContent(); return; }
+    const sw=e.target.closest('[data-color]'); if(sw){ COLORSEL=COLORSEL===sw.dataset.color?null:sw.dataset.color; renderMain(); return; }
+    const tg=e.target.closest('[data-tag]'); if(tg){ const t=tg.dataset.tag; TAGSEL.has(t)?TAGSEL.delete(t):TAGSEL.add(t); renderMain(); return; }
+    const fcl=e.target.closest('[data-fclr]'); if(fcl){ FSEL[fcl.dataset.fclr]=''; renderSide(); renderMain(); return; }
+    const cf=e.target.closest('#clearF'); if(cf){ clearFilters(); return; }
+  });
+
+  $('#dClose').onclick=closeDrawer; $('#scrim').onclick=closeDrawer;
+  $('#dPrev').onclick=()=>dMove(-1); $('#dNext').onclick=()=>dMove(1);
+  $('#dSave').onclick=dSave; $('#dDl').onclick=dDownload; $('#dDel').onclick=dDelete;
+  $('#dCat').addEventListener('change',()=>{ const m=DLS.list[DLS.i]; if(m){ m.cat=$('#dCat').value; sPut('refs',m); renderSide(); renderMain(); } });
+  $('#dTagAdd').onclick=()=>{ const v=$('#dTagInput').value.trim(); if(!v) return; const m=DLS.list[DLS.i]; m.tags=[...new Set([...(m.tags||[]),...v.split(/[,，]/).map(s=>s.trim()).filter(Boolean)])]; $('#dTagInput').value=''; sPut('refs',m); renderTagbox(m); renderMain(); };
+  $('#dTagInput').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#dTagAdd').click(); });
+  $('#dTagBox').addEventListener('click',e=>{ const rt=e.target.closest('[data-rt]'); if(!rt) return; const m=DLS.list[DLS.i]; m.tags=(m.tags||[]).filter(t=>t!==rt.dataset.rt); sPut('refs',m); renderTagbox(m); renderMain(); });
+  $('#dAlbBox').addEventListener('click',async e=>{
+    const b=e.target.closest('[data-alb]'); if(!b) return; const m=DLS.list[DLS.i]; if(!m) return;
+    if(b.dataset.alb==='__new'){ const id=await newAlb(); if(!id) return; m.albums=[...new Set([...(m.albums||[]),id])]; await sPut('refs',m); renderSide(); renderMain(); renderAlbBox(m); return; }
+    const id=b.dataset.alb; m.albums=(m.albums||[]).includes(id)?(m.albums||[]).filter(x=>x!==id):[...(m.albums||[]),id];
+    await sPut('refs',m); renderSide(); renderMain(); renderAlbBox(m);
+  });
+  $('#dFacets').addEventListener('change',async e=>{
+    const s=e.target.closest('[data-fk]'); if(!s) return; const m=DLS.list[DLS.i]; if(!m) return;
+    m.f=m.f||{}; m.f[s.dataset.fk]=s.value; await sPut('refs',m); renderSide(); renderMain();
+  });
+  $('#dFs').onclick=()=>{ const m=DLS.list[DLS.i]; if(m) openLB(DLS.list,DLS.i); };
+
+  $('#themeBtn').onclick=toggleTheme;
+  $('#accentBtn').onclick=pickAccent;
+
+  $('#openImp').onclick=openImp; $('#impBtn').onclick=openImp; $('#impX').onclick=closeImp; $('#imp').addEventListener('click',e=>{ if(e.target.id==='imp') closeImp(); });
+  $('#urlAdd').onclick=()=>{ addUrl($('#urlIn').value); $('#urlIn').value=''; };
+  $('#urlIn').addEventListener('keydown',e=>{ if(e.key==='Enter'){ addUrl(e.target.value); e.target.value=''; } });
+
+  $('#lbX').onclick=closeLB; $('#lbPrev').onclick=()=>lbMove(-1); $('#lbNext').onclick=()=>lbMove(1);
+  $('#lb').addEventListener('click',e=>{ if(e.target.id==='lb'||e.target.id==='lbStage') closeLB(); });
+  document.addEventListener('keydown',e=>{
+    if($('#lb').classList.contains('open')){ if(e.key==='Escape')closeLB(); else if(e.key==='ArrowLeft')lbMove(-1); else if(e.key==='ArrowRight')lbMove(1); return; }
+    if($('#drawer').classList.contains('open')){ if(e.key==='Escape')closeDrawer(); else if(e.key==='ArrowLeft')dMove(-1); else if(e.key==='ArrowRight')dMove(1); }
+  });
+}
+function openImp(){ $('#imp').classList.add('open'); $('#impList').innerHTML=''; setTimeout(()=>$('#urlIn').focus(),80); }
+function closeImp(){ $('#imp').classList.remove('open'); }
+function pick(){ const i=document.createElement('input'); i.type='file'; i.accept='image/*'; i.multiple=true; i.onchange=()=>handleFiles(i.files); i.click(); }
+
+/* ---------- 启动 ---------- */
+(async function init(){
+  try{ await boot(); MAT=await sAll('refs'); UCATS=await sAll('cats'); UALB=await sAll('albums'); }catch(e){ console.warn('存储不可用',e); }
+  if(!UCATS.length){ UCATS=seedCats(); for(const c of UCATS) await sPut('cats',c); }
+  readPrefs(); bind(); applyPrefs(); renderSide(); renderCatSelect(); renderMain();
+})();
+</script>
+</body>
+</html>
